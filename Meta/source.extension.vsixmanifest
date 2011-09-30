@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+  <Identifier Id="92203069-8ed1-4b40-8356-b4cfab306222">
+    <Name>Meta</Name>
+    <Author>Brandon Kohn</Author>
+    <Version>0.1.0</Version>
+    <Description xml:space="preserve">A collection of utilities for template meta-programming with C++.
+
+Features: 
+* Per file compile time profiling
+* Profiling of template instantiations via 
+  the boost template_profiler toolset.</Description>
+    <Locale>1033</Locale>
+    <License>License.txt</License>
+    <Icon>Package3.ico</Icon>
+    <PreviewImage>meta_vsutils2.png</PreviewImage>
+    <InstalledByMsi>false</InstalledByMsi>
+    <SupportedProducts>
+      <VisualStudio Version="10.0">
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+        <Edition>VCExpress</Edition>
+      </VisualStudio>
+    </SupportedProducts>
+    <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.0" />
+  </Identifier>
+  <References />
+  <Content>
+    <CustomExtension Type="DLL">BoostTemplateProfiler.dll</CustomExtension>
+  </Content>
+</Vsix>

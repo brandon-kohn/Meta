@@ -1,0 +1,15 @@
+c:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\Meta_IntegrationTests.dll
+c:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\Meta_IntegrationTests.pdb
+c:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\Meta.dll
+c:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\Microsoft.VSSDK.TestHostFramework.dll
+c:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\Meta.pdb
+c:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\Microsoft.VSSDK.TestHostFramework.pdb
+c:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\obj\Debug\ResolveAssemblyReference.cache
+c:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\obj\Debug\Meta_IntegrationTests.dll
+c:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\obj\Debug\Meta_IntegrationTests.pdb
+C:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\boost_16x16.ico
+C:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\boost_32x32.ico
+C:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\License.txt
+C:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\meta_large.png
+C:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\meta_vsutils.png
+C:\Projects\VC10\tools\Meta\Meta\Meta_IntegrationTests\bin\Debug\Resources\Package.ico

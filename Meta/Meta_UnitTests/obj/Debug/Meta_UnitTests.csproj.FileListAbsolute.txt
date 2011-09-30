@@ -1,0 +1,17 @@
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\Meta_UnitTests.dll
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\Meta_UnitTests.pdb
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\Meta.dll
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\Microsoft.VSSDK.TestHostFramework.dll
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\Microsoft.VSSDK.UnitTestLibrary.dll
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\Meta.pdb
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\Microsoft.VSSDK.UnitTestLibrary.xml
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\Microsoft.VSSDK.TestHostFramework.pdb
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\obj\Debug\ResolveAssemblyReference.cache
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\obj\Debug\Meta_UnitTests.dll
+c:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\obj\Debug\Meta_UnitTests.pdb
+C:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\boost_16x16.ico
+C:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\boost_32x32.ico
+C:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\License.txt
+C:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\meta_large.png
+C:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\meta_vsutils.png
+C:\Projects\VC10\tools\Meta\Meta\Meta_UnitTests\bin\Debug\Resources\Package.ico
