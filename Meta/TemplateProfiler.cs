@@ -37,13 +37,13 @@ namespace Meta
         private System.Diagnostics.Process myProcess;
         private volatile bool cancelProfile = false;
 
-        public TemplateProfiler(EnvDTE.Project proj, string file, IVsOutputWindowPane pane, Action onFinished )
+        public TemplateProfiler(EnvDTE.Project proj, string file, int stackMaxSize, IVsOutputWindowPane pane, Action onFinished)
         {
             project = proj;
             clTool = new VCCompilerHelper(project);
             filename = file;
             profilePane = pane;
-            profiler = new ActiveObject(500000000);
+            profiler = new ActiveObject(stackMaxSize);
             signalFinished = onFinished;
             Initialize();
             profiler.Signal();

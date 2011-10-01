@@ -44,6 +44,8 @@ namespace Meta
     /// IVsPackage interface and uses the registration attributes defined in the framework to 
     /// register itself and its components with the shell.
     /// </summary>
+    [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
+    [ProvideOptionPage(typeof(MetaPackage.Options), "Meta", "Options Page", 1000, 1001, false)]
     // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
     // a package.
     [PackageRegistration(UseManagedResourcesOnly = true)]
@@ -70,6 +72,16 @@ namespace Meta
         private TemplateProfiler templateProfiler;
         private BuildProfiler buildProfiler;
         Object mutex = new Object();
+        
+        public class Options : DialogPage
+        {
+            int profileStackMaxSize = 500000000;
+            public int StackMaxSize
+            {
+                get { return profileStackMaxSize; }
+                set { profileStackMaxSize = value; }
+            }
+        }
         
         /// <summary>
         /// Default constructor of the package.
@@ -287,7 +299,8 @@ namespace Meta
                     if (isProfilingInstantiations == 0)
                     {
                         ClaimInstantiationState();
-                        templateProfiler = new TemplateProfiler(project, filename, GetProfileOutputPane(), this.FreeInstantiationState);
+                        Options opts = GetOptions();
+                        templateProfiler = new TemplateProfiler(project, filename, opts.StackMaxSize, GetProfileOutputPane(), this.FreeInstantiationState);
                     }
                     else
                     {
@@ -295,6 +308,12 @@ namespace Meta
                     }
                 }
             }            
+        }
+
+        public MetaPackage.Options GetOptions()
+        {
+            var hw = GetDialogPage(typeof(MetaPackage.Options)) as Options;
+            return hw;
         }
         
         protected override void Dispose(bool disposing)
