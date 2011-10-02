@@ -11,9 +11,11 @@ Features:
 * Profiling of template instantiations via 
   the boost template_profiler toolset.</Description>
     <Locale>1033</Locale>
+    <MoreInfoUrl>https://github.com/brandon-kohn/Meta</MoreInfoUrl>
     <License>License.txt</License>
+    <GettingStartedGuide>https://github.com/brandon-kohn/Meta/wiki/Meta</GettingStartedGuide>
     <Icon>Package.ico</Icon>
-    <PreviewImage>meta_vsutils2.png</PreviewImage>
+    <PreviewImage>Preview.png</PreviewImage>
     <InstalledByMsi>false</InstalledByMsi>
     <SupportedProducts>
       <VisualStudio Version="10.0">
