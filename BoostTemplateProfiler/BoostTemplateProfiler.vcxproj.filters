@@ -27,9 +27,6 @@
     <ClCompile Include="preprocess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="profiler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="filter.hpp">
@@ -45,9 +42,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="export_api.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="profiler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

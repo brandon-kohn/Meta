@@ -1,4 +1,12 @@
-﻿using System;
+﻿//
+//! Copyright © 2008-2011
+//! Brandon Kohn
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,7 +42,7 @@ namespace Meta
         private IVsOutputWindowPane profilePane;
         private StreamWriter profile_output;
         private Action signalFinished;
-        private System.Diagnostics.Process myProcess;
+        private System.Diagnostics.Process profileProcess;
         private volatile bool cancelProfile = false;
 
         public TemplateProfiler(EnvDTE.Project proj, string file, int stackMaxSize, IVsOutputWindowPane pane, Action onFinished)
@@ -43,7 +51,20 @@ namespace Meta
             clTool = new VCCompilerHelper(project);
             filename = file;
             profilePane = pane;
+            try
+            {
             profiler = new ActiveObject(stackMaxSize);
+            }
+            catch (System.OutOfMemoryException ex)
+            {
+                string message = "The Tools->Meta->Options page specifies a " + stackMaxSize + " byte stack reserve size. This exceeds available memory." 
+                    + Environment.NewLine + "Please try again with a lower stack size reserve value.";
+                string caption = "Stack Reserve Size Too Large...";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cancelProfile = true;
+                return;
+            }
+            
             signalFinished = onFinished;
             Initialize();
             profiler.Signal();
@@ -52,8 +73,8 @@ namespace Meta
         public void Cancel()
         {
             cancelProfile = true;
-            if (myProcess != null)
-                myProcess.Kill();
+            if (profileProcess != null)
+                profileProcess.Kill();
         }
 
         public void Initialize()
@@ -67,30 +88,30 @@ namespace Meta
                               , string source_to_instrument
                               , string output )
         {
-            myProcess = new System.Diagnostics.Process();
+            profileProcess = new System.Diagnostics.Process();
 
             try
             {
-                string full_args = compiler_binary + " " + source_to_instrument.Quote() + " /P /Fi" + output.Quote() + " " + compiler_args;
+                string full_args = compiler_binary + " /TP " + source_to_instrument.Quote() + " /P /Fi" + output.Quote() + " " + compiler_args;
 
-                myProcess.StartInfo.UseShellExecute = false;
-                myProcess.StartInfo.FileName = "cmd.exe";
+                profileProcess.StartInfo.UseShellExecute = false;
+                profileProcess.StartInfo.FileName = "cmd.exe";
                 //profilePane.OutputStringThreadSafe("Command line: cmd.exe " + full_args + Environment.NewLine);
-                myProcess.StartInfo.Arguments = full_args;
-                myProcess.StartInfo.CreateNoWindow = true;
-                myProcess.StartInfo.WorkingDirectory = starting_directory;
-                //System.Collections.Specialized.StringDictionary dict = myProcess.StartInfo.EnvironmentVariables;
+                profileProcess.StartInfo.Arguments = full_args;
+                profileProcess.StartInfo.CreateNoWindow = true;
+                profileProcess.StartInfo.WorkingDirectory = starting_directory;
+                //System.Collections.Specialized.StringDictionary dict = profileProcess.StartInfo.EnvironmentVariables;
                 //dict["Path"] += (";" + clTool.VSInstallDir + "Common7\\IDE");
-                //myProcess.StartInfo.RedirectStandardError = true;
-                //myProcess.OutputDataReceived += new DataReceivedEventHandler(OutputDataHandler);
-                //myProcess.StartInfo.RedirectStandardOutput = true;
-                //myProcess.ErrorDataReceived += new DataReceivedEventHandler(ErrorDataHandler);
+                //profileProcess.StartInfo.RedirectStandardError = true;
+                //profileProcess.OutputDataReceived += new DataReceivedEventHandler(OutputDataHandler);
+                //profileProcess.StartInfo.RedirectStandardOutput = true;
+                //profileProcess.ErrorDataReceived += new DataReceivedEventHandler(ErrorDataHandler);
                 if (cancelProfile)
                     return;
-                myProcess.Start();
-                //myProcess.BeginOutputReadLine();
-                //myProcess.BeginErrorReadLine();
-                myProcess.WaitForExit();
+                profileProcess.Start();
+                //profileProcess.BeginOutputReadLine();
+                //profileProcess.BeginErrorReadLine();
+                profileProcess.WaitForExit();
                 // This code assumes the process you are starting will terminate itself. 
                 // Given that is is started without a window so you cannot terminate it 
                 // on the desktop, it must terminate itself or you can do it programmatically
@@ -113,30 +134,30 @@ namespace Meta
         {
             profile_output = new StreamWriter(output_profile);
 
-            myProcess = new System.Diagnostics.Process();
+            profileProcess = new System.Diagnostics.Process();
 
             try
             {
-                string full_args = compiler_binary + " /c " + source_to_profile.Quote() + " " + compiler_args;
+                string full_args = compiler_binary + " /c /TP " + source_to_profile.Quote() + " " + compiler_args;
                 
-                myProcess.StartInfo.UseShellExecute = false;
-                myProcess.StartInfo.FileName = "cmd.exe";
+                profileProcess.StartInfo.UseShellExecute = false;
+                profileProcess.StartInfo.FileName = "cmd.exe";
                 //profilePane.OutputStringThreadSafe("Command line: cmd.exe " + full_args + Environment.NewLine);
-                myProcess.StartInfo.Arguments = full_args;
-                myProcess.StartInfo.CreateNoWindow = true;
-                myProcess.StartInfo.WorkingDirectory = starting_directory;
-                //System.Collections.Specialized.StringDictionary dict = myProcess.StartInfo.EnvironmentVariables;
+                profileProcess.StartInfo.Arguments = full_args;
+                profileProcess.StartInfo.CreateNoWindow = true;
+                profileProcess.StartInfo.WorkingDirectory = starting_directory;
+                //System.Collections.Specialized.StringDictionary dict = profileProcess.StartInfo.EnvironmentVariables;
                 //dict["Path"] += (";" + clTool.VSInstallDir + "Common7\\IDE");
-                myProcess.StartInfo.RedirectStandardError = true;
-                myProcess.OutputDataReceived += new DataReceivedEventHandler(OutputDataHandler);
-                myProcess.StartInfo.RedirectStandardOutput = true;
-                myProcess.ErrorDataReceived += new DataReceivedEventHandler(ErrorDataHandler);
+                profileProcess.StartInfo.RedirectStandardError = true;
+                profileProcess.OutputDataReceived += new DataReceivedEventHandler(OutputDataHandler);
+                profileProcess.StartInfo.RedirectStandardOutput = true;
+                profileProcess.ErrorDataReceived += new DataReceivedEventHandler(ErrorDataHandler);
                 if (cancelProfile)
                     return;
-                myProcess.Start();
-                myProcess.BeginOutputReadLine();
-                myProcess.BeginErrorReadLine();
-                myProcess.WaitForExit();
+                profileProcess.Start();
+                profileProcess.BeginOutputReadLine();
+                profileProcess.BeginErrorReadLine();
+                profileProcess.WaitForExit();
                 // This code assumes the process you are starting will terminate itself. 
                 // Given that is is started without a window so you cannot terminate it 
                 // on the desktop, it must terminate itself or you can do it programmatically
@@ -177,6 +198,9 @@ namespace Meta
         {
             try
             {
+                if (cancelProfile)
+                    return;
+
                 profilePane.Clear();
                 profilePane.OutputStringThreadSafe("Profiling Instantiations on " + filename + ":" + Environment.NewLine + Environment.NewLine);
                 profilePane.Activate();

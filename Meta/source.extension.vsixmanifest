@@ -4,7 +4,7 @@
     <Name>Meta</Name>
     <Author>Brandon Kohn</Author>
     <Version>0.1.0</Version>
-    <Description xml:space="preserve">A collection of utilities for template meta-programming with C++.
+    <Description xml:space="preserve">A collection of utilities for template meta-programming with C++ based on Boost.
 
 Features: 
 * Per file compile time profiling
@@ -12,7 +12,7 @@ Features:
   the boost template_profiler toolset.</Description>
     <Locale>1033</Locale>
     <License>License.txt</License>
-    <Icon>Package3.ico</Icon>
+    <Icon>Package.ico</Icon>
     <PreviewImage>meta_vsutils2.png</PreviewImage>
     <InstalledByMsi>false</InstalledByMsi>
     <SupportedProducts>
@@ -27,6 +27,6 @@ Features:
   </Identifier>
   <References />
   <Content>
-    <CustomExtension Type="DLL">BoostTemplateProfiler.dll</CustomExtension>
+    <CustomExtension Type="DLL">|BoostTemplateProfiler|</CustomExtension>
   </Content>
 </Vsix>

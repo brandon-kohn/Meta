@@ -1,9 +1,18 @@
-﻿//! Adapted from code from http://geekswithblogs.net/dbose/archive/2009/10/17/c-activeobject-runnable.aspx
+﻿//
+//! Copyright © 2008-2011
+//! Brandon Kohn
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+//! Adapted from code from http://geekswithblogs.net/dbose/archive/2009/10/17/c-activeobject-runnable.aspx
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Meta
 {    
@@ -146,11 +155,22 @@ namespace Meta
                     try
                     {
                         m_ActiveAction();
-                        m_ShutdownEvent.Set();
+                    }
+                    catch (System.OutOfMemoryException ex)
+                    {
+                        string message = "The Tools->Meta->Options page specifies a " + maxStackSize + " byte stack reserve size. This exceeds available memory."
+                            + Environment.NewLine + "Please try again with a lower stack size reserve value.";
+                        string caption = "Stack Reserve Size Too Large...";
+                        MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
                     catch (Exception ex)
                     {
                         //! Log the exception?
+                    }
+                    finally
+                    {
+                        m_ShutdownEvent.Set();
                     }
                 }
             }

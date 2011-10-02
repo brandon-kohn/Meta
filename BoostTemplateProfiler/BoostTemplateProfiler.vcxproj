@@ -64,6 +64,14 @@
       <ImportLibrary>$(TargetDir)$(TargetName).lib</ImportLibrary>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -83,6 +91,14 @@
       <ImportLibrary>$(TargetDir)$(TargetName).lib</ImportLibrary>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -91,14 +107,12 @@
     <ClCompile Include="filter.cpp" />
     <ClCompile Include="postprocess.cpp" />
     <ClCompile Include="preprocess.cpp" />
-    <ClCompile Include="profiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export_api.hpp" />
     <ClInclude Include="filter.hpp" />
     <ClInclude Include="postprocess.hpp" />
     <ClInclude Include="preprocess.hpp" />
-    <ClInclude Include="profiler.h" />
     <ClInclude Include="template_profiler.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
