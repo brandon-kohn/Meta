@@ -314,26 +314,21 @@ struct logger : std::stringstream
 {
     logger( STRFPTR pCallback )
         : pCallback(pCallback)
-        , ofs( "c:/Projects/shit.txt" )
     {
     }
 
     ~logger()
     {
         (*pCallback)(str().c_str());
-        ofs << str() << std::endl;
-        ofs.close();
     }
 
     void flush()
     {
         (*pCallback)(str().c_str());
-        ofs << str() << std::endl;
         str("");
     }
 
     STRFPTR           pCallback;
-    std::ofstream ofs;
 };
 
 template <typename T>
