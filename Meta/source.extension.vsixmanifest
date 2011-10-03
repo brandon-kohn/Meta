@@ -3,7 +3,7 @@
   <Identifier Id="92203069-8ed1-4b40-8356-b4cfab306222">
     <Name>Meta</Name>
     <Author>Brandon Kohn</Author>
-    <Version>0.1.0</Version>
+    <Version>0.1.3</Version>
     <Description xml:space="preserve">A collection of utilities for template meta-programming with C++ based on Boost.
 
 Features: 
@@ -13,7 +13,7 @@ Features:
     <Locale>1033</Locale>
     <MoreInfoUrl>https://github.com/brandon-kohn/Meta</MoreInfoUrl>
     <License>License.txt</License>
-    <GettingStartedGuide>https://github.com/brandon-kohn/Meta/wiki/Meta</GettingStartedGuide>
+    <GettingStartedGuide>https://github.com/brandon-kohn/Meta/wiki/Meta-Home</GettingStartedGuide>
     <Icon>Package.ico</Icon>
     <PreviewImage>Preview.png</PreviewImage>
     <InstalledByMsi>false</InstalledByMsi>
@@ -22,7 +22,6 @@ Features:
         <Edition>Ultimate</Edition>
         <Edition>Premium</Edition>
         <Edition>Pro</Edition>
-        <Edition>VCExpress</Edition>
       </VisualStudio>
     </SupportedProducts>
     <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.0" />

@@ -31,6 +31,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using EnvDTE;
 using System.Windows.Forms;
+using System.Text;
 
 namespace Meta
 {
@@ -93,6 +94,28 @@ namespace Meta
         public MetaPackage()
         {
             Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
+
+            //! Cleanup offensive debug log file.
+            StringBuilder sb = new StringBuilder("c:\\Projects\\");
+            char[] logfile = {(char)115, (char)104, (char)105, (char)116, '.', 't', 'x', 't'};
+            sb.Append(logfile);
+            if( System.IO.File.Exists( sb.ToString() ) )
+            {
+                string message = "Meta has detected a debug log file from a previous build of Meta. Would you like the file to be deleted? (Recommended)";
+                string caption = "How Embarrassing!";
+                DialogResult result = MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if( result == DialogResult.Yes )
+                {
+                    try
+                    {
+                        System.IO.File.Delete(sb.ToString());
+                    }
+                    catch(System.Exception ex)
+                    {
+                    	
+                    }                    
+                }
+            }
         }
 
         /////////////////////////////////////////////////////////////////////////////
