@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MultiMapTest.cs" />
     <Compile Include="PackageTest.cs" />
     <!---->
     <Compile Include="MenuItemTests\MenuItemCallback.cs" />

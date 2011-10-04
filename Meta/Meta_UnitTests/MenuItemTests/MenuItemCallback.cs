@@ -66,12 +66,7 @@ namespace Meta_UnitTests.MenuItemTests
 
             // Site the package
             Assert.AreEqual(0, package.SetSite(serviceProvider), "SetSite did not return S_OK");
-
-            //Invoke private method on package class and observe that the method does not throw
-            System.Reflection.MethodInfo info = package.GetType().GetMethod("MenuItemCallback", BindingFlags.Instance | BindingFlags.NonPublic);
-            Assert.IsNotNull(info, "Failed to get the private method MenuItemCallback throug refplection");
-            info.Invoke(package, new object[] { null, null });
-
+            
             //Clean up services
             serviceProvider.RemoveService(typeof(SVsUIShell));
 

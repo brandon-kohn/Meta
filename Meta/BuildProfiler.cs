@@ -44,7 +44,7 @@ namespace Meta
         private string onlyFile = null;
         Compiler cl;
 
-        public BuildProfiler(EnvDTE.Project proj, IVsOutputWindowPane bpane, IVsOutputWindowPane ppane, Action onFinished, string singleFile = null)
+        public BuildProfiler(EnvDTE.Project proj, int stackMaxSize, IVsOutputWindowPane bpane, IVsOutputWindowPane ppane, Action onFinished, string singleFile = null)
         {
             if (singleFile != null)
                 onlyFile = singleFile;
@@ -52,7 +52,7 @@ namespace Meta
             clTool = new VCCompilerHelper(project);
             profilePane = ppane;
             buildPane = bpane;
-            profiler = new ActiveObject(500000000);
+            profiler = new ActiveObject(stackMaxSize);
             signalFinished = onFinished;
             Initialize();
             profiler.Signal();

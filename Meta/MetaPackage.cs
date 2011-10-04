@@ -275,16 +275,17 @@ namespace Meta
                             CleanProject(hierarchy);
                         ClaimBuildState();
                         EnvDTE.Project project = GetProject(hierarchy);
+                        Options opts = GetOptions();
                         if (IsCPPNode(pitemid, hierarchy))
                         {
                             object value;
                             hierarchy.GetProperty(pitemid, (int)__VSHPROPID.VSHPROPID_Name, out value);
                             Debug.Assert(value != null);
                             if( value != null )
-                                buildProfiler = new BuildProfiler(project, GetBuildOutputPane(), GetProfileOutputPane(), this.FreeBuildState, value.ToString());
+                                buildProfiler = new BuildProfiler(project, opts.StackMaxSize, GetBuildOutputPane(), GetProfileOutputPane(), this.FreeBuildState, value.ToString());
                         }
                         else
-                            buildProfiler = new BuildProfiler(project, GetBuildOutputPane(), GetProfileOutputPane(), this.FreeBuildState);
+                            buildProfiler = new BuildProfiler(project, opts.StackMaxSize, GetBuildOutputPane(), GetProfileOutputPane(), this.FreeBuildState);
                     }
                     else
                     {
