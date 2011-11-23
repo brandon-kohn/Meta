@@ -37,6 +37,10 @@
     <Reference Include="Accessibility">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="envdte80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\envdte80.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Engine" />
     <Reference Include="Microsoft.Build.Framework" />
@@ -105,10 +109,15 @@
     <Compile Include="CallbackLog.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="IDEBuildLogger.cs" />
+    <Compile Include="IDEBuildLogger.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MultiMap.cs" />
-    <Compile Include="ProfileLogger.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="ProfileLogger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProjectHelper.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

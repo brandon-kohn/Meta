@@ -110,7 +110,7 @@ namespace Meta
                     {
                         System.IO.File.Delete(sb.ToString());
                     }
-                    catch(System.Exception ex)
+                    catch(System.Exception /*ex*/)
                     {
                     	
                     }                    
@@ -192,7 +192,7 @@ namespace Meta
                 {
                     if (isProfilingInstantiations == 0 && !VsShellUtilities.IsSolutionBuilding(this) )
                     {
-                        if( IsCPPProject(projectItemId, hierarchy) || IsCPPNode(projectItemId, hierarchy) )
+                        if (ProjectHelper.IsCPPProject(projectItemId, hierarchy) || ProjectHelper.IsCPPNode(projectItemId, hierarchy))
                         {
                             menuCommand.Visible = true;
                             menuCommand.Text = isProfilingBuildTime != 0 ? "Cancel Build Profile..." : "Profile Build Time";
@@ -204,29 +204,7 @@ namespace Meta
                 menuCommand.Visible = false;
             }
         }
-
-        private bool IsCPPNode( uint pid, IVsHierarchy node )
-        {
-            object value;
-            node.GetProperty(pid, (int)__VSHPROPID.VSHPROPID_Name, out value);
-            return (
-                        value != null &&
-                        (
-                            value.ToString().EndsWith(".cpp") ||
-                            value.ToString().EndsWith(".cxx") ||
-                            value.ToString().EndsWith(".cc") ||
-                            value.ToString().EndsWith(".c")
-                        )
-                    );
-        }
-
-        private bool IsCPPProject(uint pid, IVsHierarchy node)
-        {
-            object value;
-            node.GetProperty(pid, (int)__VSHPROPID.VSHPROPID_TypeName, out value);
-            return ( value != null && value.ToString() == "Microsoft Visual C++" );
-        }
-        
+                
         private void uiContex2Cmd_BeforeQueryStatus(object sender, EventArgs e)
         {
             OleMenuCommand menuCommand = sender as OleMenuCommand;
@@ -239,7 +217,7 @@ namespace Meta
                 monitorSelection.GetCurrentSelection(out hierarchyPtr, out projectItemId, out mis, out selectionContainerPtr);
 
                 IVsHierarchy hierarchy = Marshal.GetTypedObjectForIUnknown(hierarchyPtr, typeof(IVsHierarchy)) as IVsHierarchy;
-                if (hierarchy != null && isProfilingBuildTime == 0 && !VsShellUtilities.IsSolutionBuilding(this) && IsCPPNode(projectItemId, hierarchy) )
+                if (hierarchy != null && isProfilingBuildTime == 0 && !VsShellUtilities.IsSolutionBuilding(this) && ProjectHelper.IsCPPNode(projectItemId, hierarchy))
                 {
                     menuCommand.Visible = true;
                     menuCommand.Text = isProfilingInstantiations != 0 ? "Cancel Instantiation Profile..." : "Profile Template Instantiations";
@@ -271,12 +249,14 @@ namespace Meta
                     IVsHierarchy hierarchy = Marshal.GetTypedObjectForIUnknown(ppHier, typeof(IVsHierarchy)) as IVsHierarchy;
                     if (isProfilingBuildTime==0)
                     {
-                        if( IsCPPProject(pitemid, hierarchy) )
+                        EnvDTE.Project project = ProjectHelper.GetProject(hierarchy);
+                        
+                        if( ProjectHelper.IsCPPProject(pitemid, hierarchy) )
                             CleanProject(hierarchy);
+                        
                         ClaimBuildState();
-                        EnvDTE.Project project = GetProject(hierarchy);
                         Options opts = GetOptions();
-                        if (IsCPPNode(pitemid, hierarchy))
+                        if (ProjectHelper.IsCPPNode(pitemid, hierarchy))
                         {
                             object value;
                             hierarchy.GetProperty(pitemid, (int)__VSHPROPID.VSHPROPID_Name, out value);
@@ -319,7 +299,7 @@ namespace Meta
                     //! Get the filename.
                     string filename = value.ToString();
 
-                    EnvDTE.Project project = GetProject(hierarchy);
+                    EnvDTE.Project project = ProjectHelper.GetProject(hierarchy);
                     if (isProfilingInstantiations == 0)
                     {
                         ClaimInstantiationState();
@@ -355,32 +335,6 @@ namespace Meta
                 solution.UnadviseSolutionEvents(solutionEventsCookie);
 
             BuildManager.DefaultBuildManager.CancelAllSubmissions();
-        }
-
-        public EnvDTE.Project GetProject(IVsHierarchy hierarchy)
-        {
-            object project;
-            ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out project));
-            return (project as EnvDTE.Project);
-        }
-
-        public EnvDTE.ProjectItem GetProjectItem(IVsHierarchy hierarchy)
-        {
-            object project;
-            ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out project));
-            return (project as EnvDTE.ProjectItem);
-        }
-        
-        public IVsBuildableProjectCfg GetBuildableProjectCfg(IVsHierarchy hierarchy)
-        {
-            IVsSolutionBuildManager buildManager = (IVsSolutionBuildManager)GetService(typeof(SVsSolutionBuildManager));
-
-            IVsProjectCfg[] ppIVsProjectCfg = new IVsProjectCfg[1];
-            buildManager.FindActiveProjectCfg(IntPtr.Zero, IntPtr.Zero, hierarchy, ppIVsProjectCfg);
-
-            IVsBuildableProjectCfg ppIVsBuildableProjectCfg;
-            ppIVsProjectCfg[0].get_BuildableProjectCfg(out ppIVsBuildableProjectCfg);
-            return ppIVsBuildableProjectCfg;
         }
 
         public IVsHierarchy GetHierarchy(System.IServiceProvider serviceProvider, EnvDTE.Project project)
@@ -600,7 +554,7 @@ namespace Meta
                 ProjectCollection.GlobalProjectCollection.RegisterLoggers(loggers);
             }
 
-            var proj = GetProject(hierarchy);
+            var proj = ProjectHelper.GetProject(hierarchy);
             
             System.Collections.Generic.ICollection<MSBuild.Project> loadedProjects = MSBuild.ProjectCollection.GlobalProjectCollection.GetLoadedProjects(proj.FullName);
             var iter = loadedProjects.GetEnumerator();
@@ -743,12 +697,7 @@ namespace Meta
             return pane;
         }
 
-        public IVsErrorList GetErrorList()
-        {
-            IVsErrorList errorList = GetGlobalService(typeof(SVsErrorList)) as IVsErrorList;
-            return errorList;
-        }
-
+        /*
         private ProfileLogger CreateProfileLogger(IVsHierarchy hierarchy, TaskProvider tskProvider = null)
         {
             IVsOutputWindowPane profilePane = GetProfileOutputPane();
@@ -791,14 +740,16 @@ namespace Meta
 
             return null;
         }
+        */
 
         private void CleanProject(IVsHierarchy hierarchy, bool async = false)
-        {
+        {            
             System.Collections.Generic.List<ILogger> loggers = new System.Collections.Generic.List<ILogger>();
             string [] targets = {"Clean"};
             Build(hierarchy, targets, loggers, true, true, true, async);            
         }
 
+        /*
         private void OnProfileBuild()
         {
             int isBusy;
@@ -853,6 +804,7 @@ namespace Meta
                 }
             }
         }
+        */
 
         int IVsUpdateSolutionEvents2.UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)
         {

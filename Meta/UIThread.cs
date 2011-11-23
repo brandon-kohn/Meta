@@ -8,14 +8,15 @@ IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
 PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 ***************************************************************************/
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace Meta
 {
-    using System;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.Threading;
-    using System.Windows.Forms;
+    
 
     internal sealed class UIThread : IDisposable
     {

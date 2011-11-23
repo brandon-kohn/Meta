@@ -156,7 +156,7 @@ namespace Meta
                     {
                         m_ActiveAction();
                     }
-                    catch (System.OutOfMemoryException ex)
+                    catch (System.OutOfMemoryException /*ex*/)
                     {
                         string message = "The Tools->Meta->Options page specifies a " + maxStackSize + " byte stack reserve size. This exceeds available memory."
                             + Environment.NewLine + "Please try again with a lower stack size reserve value.";
@@ -164,7 +164,7 @@ namespace Meta
                         MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    catch (Exception ex)
+                    catch (Exception /*ex*/)
                     {
                         //! Log the exception?
                     }
@@ -174,7 +174,7 @@ namespace Meta
                     }
                 }
             }
-            catch(Exception ex)
+            catch(Exception /*ex*/)
             {
                 //!Log it?
             }

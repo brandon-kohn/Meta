@@ -21,12 +21,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.VCProjectEngine;
-using Microsoft.Build.Evaluation;
-using Microsoft.Build.Execution;
-using MSBuild = Microsoft.Build.Evaluation;
-using MSBuildExec = Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 using EnvDTE;
 
 namespace Meta

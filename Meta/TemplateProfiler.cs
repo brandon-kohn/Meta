@@ -20,12 +20,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.VCProjectEngine;
-using Microsoft.Build.Evaluation;
-using Microsoft.Build.Execution;
-using MSBuild = Microsoft.Build.Evaluation;
-using MSBuildExec = Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 using EnvDTE;
 using System.Windows.Forms;
 
@@ -53,9 +47,9 @@ namespace Meta
             profilePane = pane;
             try
             {
-            profiler = new ActiveObject(stackMaxSize);
+                profiler = new ActiveObject(stackMaxSize);
             }
-            catch (System.OutOfMemoryException ex)
+            catch (System.OutOfMemoryException /*ex*/)
             {
                 string message = "The Tools->Meta->Options page specifies a " + stackMaxSize + " byte stack reserve size. This exceeds available memory." 
                     + Environment.NewLine + "Please try again with a lower stack size reserve value.";
@@ -212,7 +206,7 @@ namespace Meta
                 if (!System.IO.File.Exists(file.FullPath))
                     return;
 
-                string workingDirectory = Path.GetDirectoryName(file.FullPath);
+                string workingDirectory = clTool.Project.ProjectDirectory;
                 VCFileConfiguration fileConfig = clTool.GetActiveFileConfiguration(filename);
                 if (fileConfig != null)
                 {
@@ -229,7 +223,7 @@ namespace Meta
                         try
                         {
                             profilePane.OutputStringThreadSafe("Instrumenting Code..." + Environment.NewLine);
-                            Instrument(clWithEnv, preprocessorArgs, workingDirectory, filename, outputPreprocessed);
+                            Instrument(clWithEnv, preprocessorArgs, workingDirectory, file.RelativePath, outputPreprocessed);
                             if (cancelProfile)
                             {
                                 profilePane.OutputStringThreadSafe(Environment.NewLine + "User canceled profile." + Environment.NewLine);
@@ -239,7 +233,7 @@ namespace Meta
                                 throw new FileNotFoundException(outputPreprocessed);
                             NativeMethods.TemplateProfilePreprocess(outputPreprocessed, outputPreprocessedCpp);
                         }
-                        catch( FileNotFoundException ex )
+                        catch( FileNotFoundException /*ex*/ )
                         {
                             profilePane.OutputStringThreadSafe("Unable to preprocess " + filename + ". Please check that the file compiles and try again." + Environment.NewLine );
                             return;

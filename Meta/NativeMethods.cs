@@ -23,10 +23,10 @@ namespace Meta
 {
     internal static class NativeMethods
     {
-        [DllImport("BoostTemplateProfiler")]
+        [DllImport("BoostTemplateProfiler", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void TemplateProfilePreprocess(string p_filename, string p_output_filename);
 
-        [DllImport("BoostTemplateProfiler")]
+        [DllImport("BoostTemplateProfiler", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void TemplateProfilePostProcess(string input_file_name, IntStringDelegate log);
 
         // IIDS
