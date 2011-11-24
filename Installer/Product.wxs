@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?define VisualStudioRegistryRoot2005 = "Software\Microsoft\VisualStudio\8.0" ?>
+<?define VisualStudioRegistryRoot2008 = "Software\Microsoft\VisualStudio\9.0" ?>
+<?define VisualStudioRegistryRoot2010 = "Software\Microsoft\VisualStudio\10.0" ?>
+
+<?define ProductVersion = "0.1.4" ?>
+<?define UpgradeCode = "57A7DBA7-283D-43A1-BBAA-8745434E91A3" ?>
+
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+  <Product Name='Meta $(var.ProductVersion)' Id='*' UpgradeCode='$(var.UpgradeCode)'
+    Language='1033' Codepage='1252' Version='$(var.ProductVersion)' Manufacturer='Brandon Kohn'>
+
+    <Package Keywords='Meta Installer' Description='Meta $(var.ProductVersion) Installer' Manufacturer='Brandon Kohn'
+      Comments='Meta is a free set of utilities supporting C++ Template Meta-Programming based on the Boost libraries.'
+      InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+
+    <!-- Upgrade definition -->
+    <Property Id='PREVIOUSVERSIONSINSTALLED' Secure='yes' />
+    <Upgrade Id='$(var.UpgradeCode)'>
+      <UpgradeVersion OnlyDetect='no' Property='PREVIOUSVERSIONSINSTALLED' Minimum='0.1.0' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='no' />
+      <UpgradeVersion OnlyDetect='yes' Property='ALREADYINSTALLED' Minimum='$(var.ProductVersion)' Maximum='$(var.ProductVersion)' IncludeMinimum='yes' IncludeMaximum='yes' />
+      <UpgradeVersion OnlyDetect='yes' Property='NEWERVERSIONDETECTED' Minimum='$(var.ProductVersion)' IncludeMinimum='no' />
+    </Upgrade>
+
+    <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' />
+
+    <!-- UI Definition -->
+    <Icon Id='Package.ico' SourceFile='../Meta/Images/Package.ico' />
+    <WixVariable Id='WixUILicenseTxt' Value='../Meta/License.txt' />
+    <WixVariable Id='WixUIBannerPng' Value='../Meta/Images/Meta_Banner.png' />
+    <WixVariable Id='WixUIDialogPng' Value='../Meta/Images/Meta_Welcome.png' />
+
+    <Property Id='ApplicationFolderName' Value='Meta' />
+    <Property Id='WixAppFolder' Value='WixPerMachineFolder' />
+    <Property Id='WIXUI_EXITDIALOGOPTIONALTEXT' Value='Meta finished installing. If Visual Studio is currently running please be sure to restart it.' />
+
+    <UIRef Id='WixUI_Advanced' />
+    <UIRef Id='WixUI_ErrorProgressText' />
+
+    <!-- Properties -->
+    <Property Id="ARPHELPLINK" Value="https://github.com/brandon-kohn/Meta" />
+    <Property Id="ARPPRODUCTICON" Value="Package.ico" />
+
+    <Property Id="DEVENV2005_EXE_PATH">
+      <RegistrySearch Id="RegSearch_Devenv2005_Exe_Path" Root="HKLM" Key="$(var.VisualStudioRegistryRoot2005)\Setup\VS" Name="EnvironmentPath" Type="raw" />
+    </Property>
+    <Property Id="DEVENV2008_EXE_PATH">
+      <RegistrySearch Id="RegSearch_Devenv2008_Exe_Path" Root="HKLM" Key="$(var.VisualStudioRegistryRoot2008)\Setup\VS" Name="EnvironmentPath" Type="raw" />
+    </Property>
+    <Property Id="DEVENV2010_EXE_PATH">
+      <RegistrySearch Id="RegSearch_Devenv2010_Exe_Path" Root="HKLM" Key="$(var.VisualStudioRegistryRoot2010)\Setup\VS" Name="EnvironmentPath" Type="raw" />
+    </Property>
+    <Property Id="VS2010_DIRECTORY">
+      <RegistrySearch Id="RegSearch_VS2010_Directory" Root="HKLM" Key="$(var.VisualStudioRegistryRoot2010)\Setup\VS" Name="EnvironmentDirectory" Type="directory" />
+    </Property>
+
+    <!-- Launch conditions -->
+    <Condition Message="[ProductName] requires administrator privileges in order to be installed."> Privileged </Condition>
+    <Condition Message="[ProductName] requires either Visual Studio 2008 or Visual Studio 2010 to be installed.">
+      DEVENV2008_EXE_PATH OR DEVENV2010_EXE_PATH
+    </Condition>
+
+    <!-- Components -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder" Name="PFILES">
+        <Directory Id="APPLICATIONFOLDER" Name="Meta">
+          <Component Id="MainExecutable" Guid="AF78E760-6BAC-4AE9-B713-18C7558CA9C2">
+            <File Id="File_Meta.dll" Name="File_Meta.dll" Source="..\Meta\bin\Release\Meta.dll" Vital="yes" />
+          </Component>
+          <Component Id="VS2005Registry" Guid="8F726DE1-A11E-4EFB-8EC5-053B26B596D7">
+            <?include Registry\VS2005Registry.wxi ?>
+          </Component>
+          <Component Id="VS2008Registry" Guid="49CE009D-F00F-47E5-A099-8DAE21151E05">
+            <?include Registry\VS2008Registry.wxi ?>
+          </Component>
+          <Component Id="VS2010Registry" Guid="54BC34CD-0781-4131-80D5-AEB1B1173CED">
+            <?include Registry\VS2010Registry.wxi ?>
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Directory Id="VS2010_DIRECTORY" Name=".">
+        <Directory Id="VSIXExtensions" Name="Extensions">
+          <Directory Id="VSIXCompany" Name="Brandon Kohn">
+            <Directory Id="VSIXProduct" Name="Meta">
+              <Directory Id="VSIXVersion" Name="$(var.ProductVersion)">
+                <Component Id="VSIXManifest" Guid="46832ECE-29AF-43C0-A443-3430901FECE7">
+                  <File Id="VSIXManifest" Name="source.extension.vsixmanifest" Source="..\Meta\source.extension.vsixmanifest" />
+                  <File Id="VSIXIcon" Name="Package.ico" Source="..\Meta\Images\Package.ico" />
+                  <File Id="VSIXPreviewImage" Name="Preview.png" Source="..\Meta\Images\Preview.png" />
+                  <File Id="VSIXLicense" Name="License.txt" Source="..\Meta\License.txt" />
+                </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <!-- Features -->
+    <Feature Id='Complete' Title='Meta $(var.ProductVersion)' Description='The complete Meta package and Visual Studio integration(s).'
+             Display='expand' ConfigurableDirectory='APPLICATIONFOLDER' Level='1'>
+      <Feature Id='VS2005Integration' Level='1'
+               Title='Visual Studio 2005 Integration' Description='Integrate with Visual Studio 2005, which has been detected on this system.'>
+        <ComponentRef Id='MainExecutable' />
+        <ComponentRef Id='VS2005Registry' />
+        <Condition Level='0'>NOT DEVENV2005_EXE_PATH</Condition>
+      </Feature>
+
+      <Feature Id='VS2008Integration' Level='1'
+               Title='Visual Studio 2008 Integration' Description='Integrate with Visual Studio 2008, which has been detected on this system.'>
+        <ComponentRef Id='MainExecutable' />
+        <ComponentRef Id='VS2008Registry' />
+        <Condition Level='0'>NOT DEVENV2008_EXE_PATH</Condition>
+      </Feature>
+
+      <Feature Id='VS2010Integration' Level='1'
+               Title='Visual Studio 2010 Integration' Description='Integrate with Visual Studio 2010, which has been detected on this system.'>
+        <ComponentRef Id='MainExecutable' />
+        <ComponentRef Id='VSIXManifest' />
+        <ComponentRef Id='VS2010Registry' />
+        <Condition Level='0'>NOT DEVENV2010_EXE_PATH</Condition>
+      </Feature>
+    </Feature>
+
+    <!-- Custom actions -->
+    <CustomAction Id="AlreadyInstalled" Error="[ProductName] is already installed." />
+    <CustomAction Id="NoDowngrade" Error="A later version than [ProductName] is already installed." />
+    <CustomAction Id="CA_VS2005_SETUP" Property="DEVENV2005_EXE_PATH" ExeCommand="/setup" Impersonate="no" Execute="deferred" />
+    <CustomAction Id="CA_VS2008_SETUP" Property="DEVENV2008_EXE_PATH" ExeCommand="/setup /nosetupvstemplates" Impersonate="no" Execute="deferred" />
+    <CustomAction Id="CA_VS2010_SETUP" Property="DEVENV2010_EXE_PATH" ExeCommand="/setup /nosetupvstemplates" Impersonate="no" Execute="deferred" />
+
+    <InstallExecuteSequence>
+      <Custom Action="AlreadyInstalled" After="FindRelatedProducts"> ALREADYINSTALLED </Custom>
+      <Custom Action="NoDowngrade" After="FindRelatedProducts"> NEWERVERSIONDETECTED </Custom>
+      <Custom Action="CA_VS2005_SETUP" Before="InstallFinalize"> DEVENV2005_EXE_PATH </Custom>
+      <Custom Action="CA_VS2008_SETUP" Before="InstallFinalize"> DEVENV2008_EXE_PATH </Custom>
+      <Custom Action="CA_VS2010_SETUP" Before="InstallFinalize"> DEVENV2010_EXE_PATH </Custom>
+      <RemoveExistingProducts After="InstallFinalize" />
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>

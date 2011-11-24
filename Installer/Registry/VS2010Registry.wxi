@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?><Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+    <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\10.0\InstalledProducts\MetaPackage">
+        <RegistryValue Value="#110" Type="string" />
+        <RegistryValue Name="Package" Value="{92203069-8ed1-4b40-8356-b4cfab306222}" Type="string" />
+        <RegistryValue Name="PID" Value="1.0" Type="string" />
+        <RegistryValue Name="ProductDetails" Value="#112" Type="string" />
+        <RegistryValue Name="LogoID" Value="#400" Type="string" />
+    </RegistryKey>
+
+    <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\10.0\Packages\{92203069-8ed1-4b40-8356-b4cfab306222}">
+        <RegistryValue Value="Meta.MetaPackage, Meta, Version=1.0.0.0, Culture=neutral, PublicKeyToken=3a3bebbcedf94403" Type="string" />
+        <RegistryValue Name="InprocServer32" Value="[SystemFolder]mscoree.dll" Type="string" />
+        <RegistryValue Name="Class" Value="Meta.MetaPackage" Type="string" />
+        <RegistryValue Name="CodeBase" Value="[#File_Meta.dll]" Type="string" />
+    </RegistryKey>
+
+    <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\10.0\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}">
+        <RegistryValue Type="string" Value="" />
+        <RegistryValue Name="{92203069-8ed1-4b40-8356-b4cfab306222}" Value="0" Type="integer" />
+    </RegistryKey>
+
+    <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\10.0\Menus">
+        <RegistryValue Type="string" Value="" />
+        <RegistryValue Name="{92203069-8ed1-4b40-8356-b4cfab306222}" Value=", Menus.ctmenu, 1" Type="string" />
+    </RegistryKey>
+
+    <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\10.0\ToolsOptionsPages\Meta">
+        <RegistryValue Value="#1000" Type="string" />
+        <RegistryValue Name="Package" Value="{92203069-8ed1-4b40-8356-b4cfab306222}" Type="string" />
+    </RegistryKey>
+
+    <RegistryKey Root="HKLM" Key="Software\Microsoft\VisualStudio\10.0\ToolsOptionsPages\Meta\Options Page">
+        <RegistryValue Value="#1001" Type="string" />
+        <RegistryValue Name="Package" Value="{92203069-8ed1-4b40-8356-b4cfab306222}" Type="string" />
+        <RegistryValue Name="Page" Value="{0927f9db-a99a-32ec-bd1e-a5a242c30d16}" Type="string" />
+    </RegistryKey>
+</Include>
