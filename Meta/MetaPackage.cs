@@ -141,6 +141,11 @@ namespace Meta
                 menuItem.BeforeQueryStatus += uiContex1Cmd_BeforeQueryStatus;
                 mcs.AddCommand(menuItem);
 
+                menuCommandID = new CommandID(GuidList.guidMetaCmdSet1, (int)PkgCmdIDList.cmdidMetaUIContext3);
+                menuItem = new OleMenuCommand(GenerateBoostBuildFileCallback, menuCommandID);
+                menuItem.BeforeQueryStatus += uiContex3Cmd_BeforeQueryStatus;
+                mcs.AddCommand(menuItem);
+
                 menuCommandID = new CommandID(GuidList.guidMetaCmdSet2, (int)PkgCmdIDList.cmdidMetaUIContext1);
                 menuItem = new OleMenuCommand(BuildProfileCallback, menuCommandID);
                 menuItem.BeforeQueryStatus += uiContex1Cmd_BeforeQueryStatus;
@@ -222,6 +227,32 @@ namespace Meta
                     menuCommand.Visible = true;
                     menuCommand.Text = isProfilingInstantiations != 0 ? "Cancel Instantiation Profile..." : "Profile Template Instantiations";
                     return;
+                }
+
+                menuCommand.Visible = false;
+            }
+        }
+
+        private void uiContex3Cmd_BeforeQueryStatus(object sender, EventArgs e)
+        {
+            OleMenuCommand menuCommand = sender as OleMenuCommand;
+            if (menuCommand != null)
+            {
+                IntPtr hierarchyPtr, selectionContainerPtr;
+                uint projectItemId;
+                IVsMultiItemSelect mis;
+                IVsMonitorSelection monitorSelection = (IVsMonitorSelection)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+                monitorSelection.GetCurrentSelection(out hierarchyPtr, out projectItemId, out mis, out selectionContainerPtr);
+
+                IVsHierarchy hierarchy = Marshal.GetTypedObjectForIUnknown(hierarchyPtr, typeof(IVsHierarchy)) as IVsHierarchy;
+                if (hierarchy != null)
+                {
+                    if (ProjectHelper.IsCPPProject(projectItemId, hierarchy))
+                    {
+                        menuCommand.Visible = true;
+                        menuCommand.Text = "Convert to x64";
+                        return;
+                    }                    
                 }
 
                 menuCommand.Visible = false;
@@ -312,6 +343,40 @@ namespace Meta
                     }
                 }
             }            
+        }
+
+        /// <summary>
+        /// </summary>
+        private void GenerateBoostBuildFileCallback(object sender, EventArgs e)
+        {
+            IVsMonitorSelection SelectionService;
+            SelectionService = (IVsMonitorSelection)GetGlobalService(typeof(SVsShellMonitorSelection));
+            IntPtr ppHier;
+            uint pitemid;
+            IVsMultiItemSelect ppMIS;
+            IntPtr ppSC;
+            if (SelectionService.GetCurrentSelection(out ppHier, out pitemid, out ppMIS, out ppSC) == VSConstants.S_OK)
+            {
+                //! Handle single selections only for now.
+                if (pitemid != VSConstants.VSITEMID_SELECTION && ppHier != null)
+                {
+                    IVsHierarchy hierarchy = Marshal.GetTypedObjectForIUnknown(ppHier, typeof(IVsHierarchy)) as IVsHierarchy;
+
+                    EnvDTE.Project project = ProjectHelper.GetProject(hierarchy);
+                    foreach (EnvDTE.Project prj in project.DTE.Solution.Projects)
+                    {
+                        try
+                        {
+                            GenerateBoostBuildFile gen = new GenerateBoostBuildFile(prj);
+                        }
+                        catch (System.Exception)
+                        {
+                        }                        
+                    }
+
+                    GetBuildOutputPane().OutputStringThreadSafe("Conversion to x64 done." + Environment.NewLine);
+                }
+            }
         }
 
         public MetaPackage.Options GetOptions()
@@ -495,24 +560,7 @@ namespace Meta
         {
             return VSConstants.S_OK;
         }
-        
-        public System.Collections.Generic.IEnumerable<IVsHierarchy> LoadedProjects
-        {
-            get
-            {
-                IVsSolution solution = GetService(typeof(SVsSolution)) as IVsSolution;
-                IEnumHierarchies enumerator = null;
-                Guid guid = Guid.Empty;
-                solution.GetProjectEnum((uint)__VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION, ref guid, out enumerator);
-                IVsHierarchy[] hierarchy = new IVsHierarchy[1] { null };
-                uint fetched = 0;
-                for (enumerator.Reset(); enumerator.Next(1, hierarchy, out fetched) == VSConstants.S_OK && fetched == 1; /*nothing*/)
-                {
-                    yield return hierarchy[0];
-                }
-            }
-        }
-        
+                
         public bool Build(IVsHierarchy hierarchy, string [] targets, ICollection<ILogger> loggers, bool onlyProject = true, bool isDesignTimeBuild = true, bool NeedsUIThread = true, bool async = true )
         {
             // Get the accessor from the IServiceProvider interface for the 

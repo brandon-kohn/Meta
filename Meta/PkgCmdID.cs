@@ -17,5 +17,6 @@ namespace Meta
     {
         public const uint cmdidMetaUIContext1 = 0x100;
         public const uint cmdidMetaUIContext2 = 0x101;
+        public const uint cmdidMetaUIContext3 = 0x102;
     };
 }

@@ -108,6 +108,7 @@
     <Compile Include="BuildProfiler.cs" />
     <Compile Include="CallbackLog.cs" />
     <Compile Include="Compiler.cs" />
+    <Compile Include="GenerateBoostBuildFile.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="IDEBuildLogger.cs">
       <SubType>Code</SubType>

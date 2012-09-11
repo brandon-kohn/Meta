@@ -23,9 +23,6 @@
   <!--Definition of some VSCT specific constants. In this sample we use it for the IDs inside the guidOfficeIcon group. -->
   <Extern href="msobtnid.h"/>
 
-
-
-
   <!--The Commands section is where we the commands, menus and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidMetaPkg">
@@ -78,6 +75,17 @@
 
       </Button>
 
+      <Button guid="guidMetaSolutionToolbarCmdSet" id="cmdidMetaUIContext3" priority="0x0100" type="Button">
+        <Parent guid="guidMetaSolutionToolbarCmdSet" id="MetaSolutionToolbarGroup"/>
+        <Icon guid="guidImages" id="bmpBoost"/>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <CommandName>cmdidMetaUIContext3</CommandName>
+          <ButtonText>Generate Boost Build File</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="guidMetaSolutionFileCmdSet" id="cmdidMetaUIContext1" priority="0x0100" type="Button">
         <Parent guid="guidMetaSolutionFileCmdSet" id="MetaSolutionFileGroup"/>
         <Icon guid="guidImages" id="bmpBoost"/>
@@ -123,12 +131,13 @@
     <GuidSymbol name="guidMetaSolutionToolbarCmdSet" value="{0af37c6f-ab62-482b-944b-9580f3ffd0ff}">
       <IDSymbol name="MetaSolutionToolbarGroup" value="0x1020" />
       <IDSymbol name="cmdidMetaUIContext1" value="0x0100" />
+      <IDSymbol name="cmdidMetaUIContext3" value="0x0102" />
     </GuidSymbol>
 
     <GuidSymbol name="guidMetaSolutionFileCmdSet" value="{917C8C81-77E9-4B2B-93BC-027ED5FFCD9A}">
       <IDSymbol name="MetaSolutionFileGroup" value="0x1021"/>
       <IDSymbol name="cmdidMetaUIContext1" value="0x0100" />
-      <IDSymbol name="cmdidMetaUIContext2" value="0x0101" />
+      <IDSymbol name="cmdidMetaUIContext2" value="0x0101" />      
     </GuidSymbol>
     
     <GuidSymbol name="guidImages" value="{3d95a834-1d1d-42fb-8a64-97dc9ce79dfe}" >

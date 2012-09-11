@@ -137,6 +137,7 @@ namespace Meta
         private IVCCollection    tools = null;
         private VCConfiguration  config = null;
         private VCCLCompilerTool cltool = null;
+        private VCLinkerTool ltool = null;
                 
         public VCCompilerHelper( EnvDTE.Project prj )
         {            
@@ -166,7 +167,8 @@ namespace Meta
 
             //config = (VCConfiguration)configurations.Item(1);
             tools = (IVCCollection)config.Tools;
-            cltool = (VCCLCompilerTool)tools.Item("VCCLCompilerTool");            
+            cltool = (VCCLCompilerTool)tools.Item("VCCLCompilerTool");
+            ltool = (VCLinkerTool)tools.Item("VCLinkerTool");    
         }
 
         public VCProject Project
@@ -270,7 +272,34 @@ namespace Meta
 
             return null;
         }
-        
+
+        public void ReplacePreprocessorDefine( VCConfiguration cfg, string oldDef, string newDef )
+        {
+            VCCLCompilerTool cl = (VCCLCompilerTool)cfg.Tools.Item("VCCLCompilerTool");
+            if (cl != null)
+            {
+                cl.PreprocessorDefinitions = cl.PreprocessorDefinitions.Replace(oldDef, newDef);
+            }
+        }
+
+        public void ReplaceAdditionalLibraryDir(VCConfiguration cfg, string oldDef, string newDef)
+        {
+            VCLinkerTool l = (VCLinkerTool)cfg.Tools.Item("VCLinkerTool");
+            if (l != null)
+            {
+                l.AdditionalLibraryDirectories = l.AdditionalLibraryDirectories.Replace(oldDef, newDef);
+            }
+        }
+
+        public void ReplaceAdditionalIncludeDir(VCConfiguration cfg, string oldDef, string newDef)
+        {
+            VCCLCompilerTool cl = (VCCLCompilerTool)cfg.Tools.Item("VCCLCompilerTool");
+            if (cl != null)
+            {
+                cl.AdditionalIncludeDirectories = cl.AdditionalIncludeDirectories.Replace(oldDef, newDef);
+            }
+        }
+                
         public string GenerateCLCmdArgs()
         {
             StringBuilder cmd = new StringBuilder();

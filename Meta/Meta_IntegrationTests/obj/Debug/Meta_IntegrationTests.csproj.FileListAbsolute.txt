@@ -21,6 +21,8 @@ C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Debug\Meta.dll
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Debug\Microsoft.VSSDK.TestHostFramework.dll
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Debug\Meta.pdb
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Debug\Microsoft.VSSDK.TestHostFramework.pdb
-C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\obj\Debug\ResolveAssemblyReference.cache
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\obj\Debug\Meta_IntegrationTests.dll
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\obj\Debug\Meta_IntegrationTests.pdb
+C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Debug\Microsoft.VisualStudio.Settings.dll
+C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Debug\Microsoft.VisualStudio.Settings.xml
+C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\obj\Debug\Meta_IntegrationTests.csprojResolveAssemblyReference.cache

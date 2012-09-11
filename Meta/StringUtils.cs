@@ -59,6 +59,9 @@ namespace Meta
 
         public static string Unquote(this string s)
         {
+            if (string.IsNullOrWhiteSpace(s))
+                return s;
+
             if (s[0] == '"' && s[s.Length - 1] == '"')
                 return s.Substring(1, s.Length - 1);
             return s;
@@ -66,6 +69,9 @@ namespace Meta
 
         public static string NormalizePathSeparators(this string path)
         {
+            if( string.IsNullOrWhiteSpace(path) )
+                return path;
+
             path = path.Replace("/", @"\");
 
             Regex doubleSeparator = new Regex(@"\+");

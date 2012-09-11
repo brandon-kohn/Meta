@@ -37,6 +37,28 @@
 #include <vector>
 #include <iostream>
 
+struct logger : std::stringstream
+{
+    logger( STRFPTR pCallback )
+        : pCallback(pCallback)
+    {
+    }
+
+    ~logger()
+    {
+        (*pCallback)(str().c_str());
+    }
+
+    void flush()
+    {
+        (*pCallback)(str().c_str());
+        str("");
+    }
+
+    STRFPTR           pCallback;
+};
+
+
 //------------------------------------------------------------------------------
 namespace boost
 {
@@ -79,43 +101,82 @@ namespace expressions
     #endif
 } // namespace expressions
 
-struct print {
+struct print
+{
     int* cummulative;
     int width;
     typedef void result_type;
-    template<class T>
-    void operator()(const T& t) {
+
+    template<typename T>
+    void operator()(const T& t)
+    {
         *cummulative += t.second;
-        std::cout << std::setw(width) << t.first << std::setw(10) << t.second << " : " << std::setw(10) << *cummulative << std::endl;
+        std::cout << std::setw(width) << t.first << std::setw(10) << " : " << t.second << " | " << std::setw(10) << *cummulative << std::endl;
     }
 };
 
-struct compare {
+struct log_print
+{
+    typedef void result_type;
+
+    log_print(logger& l, int& c, int width)
+        : log(l)
+        , cummulative(c)
+        , fmt((std::string("%|1$-| %|") + boost::lexical_cast<std::string>(width) + std::string("t|: %|2$-8| %|3$-8|\n")))
+    {}
+        
+    template <typename T>
+    void operator()(const T& t)
+    {
+        cummulative += t.second;
+        log << fmt % t.first % t.second % cummulative;
+    }
+
+    logger&       log;
+    int&          cummulative;
+    boost::format fmt;
+};
+
+struct compare
+{
     template<class T>
-    bool operator()(const T& lhs, const T& rhs) const {
+    bool operator()(const T& lhs, const T& rhs) const 
+    {
         return(lhs.second > rhs.second);
     }
 };
 
 typedef std::pair<std::string, int> line_id;
 
-struct node_info {
-    node_info() : count(0), total_with_children(0) {}
+struct node_info
+{
+    node_info() 
+        : count(0), total_with_children(0) 
+    {
+
+    }
+
     std::map<const line_id*, int> children;
     std::map<const line_id*, int> parents;
     int count;
     int total_with_children;
 };
 
-struct call_graph_less {
+struct call_graph_less 
+{
     template<class T>
-    bool operator()(const T& lhs, const T& rhs) const {
+    bool operator()(const T& lhs, const T& rhs) const 
+    {
         return(lhs.second.total_with_children > rhs.second.total_with_children);
     }
 };
 
-struct print_line_id {
-    print_line_id(const line_id* x) : l(x) {}
+struct print_line_id 
+{
+    print_line_id(const line_id* x) 
+        : l(x) 
+    {}
+    
     const line_id* l;
 
     std::string file() const { return l->first; }
@@ -123,56 +184,79 @@ struct print_line_id {
     std::string location() const { return (file() + "(") + line() + ")"; }
 };
 
-std::ostream& operator<<(std::ostream& os, const print_line_id& arg) {
+std::ostream& operator<<(std::ostream& os, const print_line_id& arg) 
+{
     os << arg.location();
     return(os);
 }
 
-class instantiation_state {
+class instantiation_state 
+{
 public:
-    instantiation_state() : current(&root) {}
-    void finish_instantiation() {
+    instantiation_state() 
+        : current(&root) 
+    {}
+    
+    void finish_instantiation() 
+    {
         // be at least somewhat resilient to errors
-        if(current != &root) {
+        if(current != &root) 
+        {
             current = current->up;
         }
     }
-    void add_instantiation(const line_id* new_line, std::size_t /*backtrace_size*/) {
+
+    void add_instantiation(const line_id* new_line, std::size_t /*backtrace_size*/) 
+    {
         // don't try to deal with metafunction forwarding
         node* child(new node(new_line, current));
         current->children.push_back(child);
         current = child;
     }
-    void get_graph(std::map<const line_id*, node_info>& graph) const {
+    
+    void get_graph(std::map<const line_id*, node_info>& graph) const 
+    {
         get_graph_impl(graph, &root);
     }
 private:
-    static void add_child(std::map<const line_id*, node_info>& graph, const line_id* parent, const line_id* child) {
-        if(parent && child && parent != child) {
+    
+    static void add_child(std::map<const line_id*, node_info>& graph, const line_id* parent, const line_id* child) 
+    {
+        if(parent && child && parent != child) 
+        {
             ++graph[parent].children[child];
             ++graph[child].parents[parent];
             ++graph[parent].total_with_children;
         }
     }
-    struct node {
-        node(const line_id* i = 0, node* u = 0) : id(i), up(u), depth(up?up->depth+1:0) {
-        }
+    struct node 
+    {
+        node(const line_id* i = 0, node* u = 0)
+            : id(i), up(u), depth(up?up->depth+1:0) 
+        {}
+        
         boost::ptr_vector<node> children;
         const line_id* id;
         node* up;
         int depth;
     };
-    static void get_graph_impl(std::map<const line_id*, node_info>& graph, const node* root) {
-        BOOST_FOREACH(const node& child, root->children) {
+
+    static void get_graph_impl(std::map<const line_id*, node_info>& graph, const node* root) 
+    {
+        BOOST_FOREACH(const node& child, root->children) 
+        {
             get_graph_impl(graph, &child);
         }
-        if(root->id != 0) {
+        if(root->id != 0) 
+        {
             ++graph[root->id].count;
         }
-        for(node* parent = root->up; parent != 0; parent = parent->up) {
+        for(node* parent = root->up; parent != 0; parent = parent->up) 
+        {
             add_child(graph, parent->id, root->id);
         }
     }
+
     node* current;
     node root;
 };
@@ -291,15 +375,18 @@ void postprocess( char const * const input_file_name )
         std::copy(graph.begin(), graph.end(), std::back_inserter(call_graph));
         std::sort(call_graph.begin(), call_graph.end(), call_graph_less());
         std::cout << "\nCall Graph\n\n";
-        BOOST_FOREACH(const call_graph_node_t& node, call_graph) {
+        BOOST_FOREACH(const call_graph_node_t& node, call_graph)
+        {
             std::cout << print_line_id(node.first) << " (" << node.second.count << ")\n";
             typedef std::map<const line_id*, int>::const_reference node_t;
             std::cout << "  Parents:\n";
-            BOOST_FOREACH(node_t n, node.second.parents) {
+            BOOST_FOREACH(node_t n, node.second.parents)
+            {
                 std::cout << "    " << print_line_id(n.first) << " (" << n.second << ")\n";
             }
             std::cout << "  Children:\n";
-            BOOST_FOREACH(node_t n, node.second.children) {
+            BOOST_FOREACH(node_t n, node.second.children) 
+            {
                 std::cout << "    " << print_line_id(n.first) << " (" << n.second << "/" << graph[n.first].count << ")\n";
             }
         }
@@ -309,27 +396,6 @@ void postprocess( char const * const input_file_name )
 //------------------------------------------------------------------------------
 } // namespace boost
 //------------------------------------------------------------------------------
-
-struct logger : std::stringstream
-{
-    logger( STRFPTR pCallback )
-        : pCallback(pCallback)
-    {
-    }
-
-    ~logger()
-    {
-        (*pCallback)(str().c_str());
-    }
-
-    void flush()
-    {
-        (*pCallback)(str().c_str());
-        str("");
-    }
-
-    STRFPTR           pCallback;
-};
 
 template <typename T>
 logger& operator << ( logger& os, const T& v )
@@ -389,9 +455,11 @@ extern "C" void TEMPLATE_PROFILER_API TemplateProfilePostProcess( char const* in
     int max_match_length = 0;
     {
         std::ifstream input(input_file_name);
-        while(std::getline(input, line)) {
+        while(std::getline(input, line))
+        {
             boost::xpressive::smatch match;
-            if(boost::xpressive::regex_match(line, match, expressions::enter_message)) {
+            if(boost::xpressive::regex_match(line, match, expressions::enter_message)) 
+            {
                 max_match_length = (std::max)(max_match_length, boost::numeric_cast<int>(match[1].length()));
                 ++messages[match[1]];
                 ++total_matches;
@@ -408,22 +476,31 @@ extern "C" void TEMPLATE_PROFILER_API TemplateProfilePostProcess( char const* in
     log << "Total instantiations: " << total_matches << std::endl;
 
     std::stringstream sstr;
-    sstr << "%1% %|" << max_match_length << "t|: (%2% / %3%)\n";
-    boost::format hdr_fmt( sstr.str() );
+    sstr << "%|1$-| %|" << max_match_length << "t|: %|2$-8| %|3$-8|";
+    boost::format fmt( sstr.str() );
 
-    //! Write the header.
-    log << "\nCall Graph\n\n";
-    log << hdr_fmt % "Location" % "count" % "cum.";
+    int cummulative = 0;
+    //std::cout << std::setw(max_match_length) << "Location" << std::setw(10) << "count" << std::setw(10) << "cum." << std::endl;
+    log << fmt % "Location" % "count" % "cum." << std::endl;
     log << std::setfill('-') << std::setw(max_match_length + 20) << '-' << std::setfill(' ') << std::endl;
-
     std::string indent = "  ";
     std::string indent2 = indent + indent;
 
-    int cummulative = 0;
-    print p = { &cummulative, max_match_length };
+    log_print p(log, cummulative, max_match_length);
     std::for_each(copy.begin(), copy.end(), p);
 
-    if(use_call_graph) {
+    if(use_call_graph) 
+    {        
+        log << "\nCall Graph\n\n";
+        
+        std::stringstream sstr;
+        sstr << "%1% %|" << max_match_length << "t|: (%2% / %3%)\n";
+        boost::format hdr_fmt( sstr.str() );
+
+        //! Write the header.
+        log << hdr_fmt % "Location" % "count" % "cum.";
+        log << std::setfill('-') << std::setw(max_match_length + 20) << '-' << std::setfill(' ') << std::endl;
+
         std::size_t backtrace_depth = 0;
         std::map<const line_id*, node_info> graph;
         instantiation_state state;

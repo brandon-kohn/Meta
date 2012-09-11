@@ -28,6 +28,8 @@ C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VSSDK.
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Meta.pdb
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VSSDK.UnitTestLibrary.xml
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VSSDK.TestHostFramework.pdb
-C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\obj\Release\ResolveAssemblyReference.cache
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.dll
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.pdb
+C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VisualStudio.Settings.dll
+C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VisualStudio.Settings.xml
+C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.csprojResolveAssemblyReference.cache

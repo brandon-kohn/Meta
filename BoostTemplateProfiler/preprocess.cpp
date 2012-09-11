@@ -91,10 +91,23 @@ namespace regex
     cregex const ignored           = keep( string /*| comment*/ | pp );
     cregex const parens            = make_parens();
     cregex const ws                = _s | _ln /*| comment*/ | pp;
+    
+    cregex const templat           =
+        keep
+        (
+            _b >> as_xpr("template") >> *~(set='<') >> 
+            '<' >>
+            ( 
+                +~(set='>') | //! typical case? typename A, ..., typename Z=Z()
+                *_
+            ) >>
+            '>' 
+        );
 
     cregex const class_header =
         keep
         (
+            keep(!templat) >>
             keep( _b >> ( as_xpr( "class" ) | "struct" ) ) >>
             keep( +ws >> +_w                             ) >>
             keep( *keep( ~(set= '(',')','{',';','=') | parens | ignored ) ) >>
@@ -121,7 +134,7 @@ struct formatter : boost::noncopyable
 
         typedef cmatch::value_type sub_match;
 
-        BOOST_ASSERT( what.size() == 5 );
+        BOOST_ASSERT( what.size() == 6 );
 
         cmatch::const_iterator const p_match( std::find_if( what.begin() + 1, what.end(), []( sub_match const & match ){ return match.matched; } ) );
         BOOST_ASSERT_MSG( p_match != what.end(), "Something should have matched." );
@@ -130,7 +143,8 @@ struct formatter : boost::noncopyable
         enum match_type_t
         {
             ignore = 1,
-            header,
+            class_hdr,
+            function_hdr,
             open_brace,
             close_brace
         };
@@ -141,8 +155,7 @@ struct formatter : boost::noncopyable
             case ignore:
                 out = std::copy( match.first, match.second, out );
                 break;
-
-            case header:
+            case class_hdr:
             {
                 braces.push_back( " TEMPLATE_PROFILE_EXIT() }" );
                 static char const tail[] = " TEMPLATE_PROFILE_ENTER()";
@@ -150,7 +163,14 @@ struct formatter : boost::noncopyable
                 out = std::copy( boost::begin( tail ), boost::end( tail ) - 1, out );
                 break;
             }
-
+            case function_hdr:
+            {
+                braces.push_back( " TEMPLATE_PROFILE_EXIT() }" );
+                static char const tail[] = " TEMPLATE_PROFILE_ENTER()";
+                out = std::copy( match.first         , match.second          , out );
+                out = std::copy( boost::begin( tail ), boost::end( tail ) - 1, out );
+                break;
+            }
             case open_brace:
                 braces.push_back( "}" );
                 out = std::copy( match.first, match.second, out );
@@ -194,7 +214,7 @@ void preprocess(char const * const p_filename, const char* const p_output_file)
 
     regex::match_results<char const *> search_results;
     using namespace regex;
-    static const cregex  main_regex( (s1= ignored) | (s2=keep( class_header | function_header )) | (s3='{') | (s4='}') );
+    static const cregex  main_regex( (s1= ignored) | (s2=keep(class_header)) | (s3=keep(function_header)) | (s4='{') | (s5='}') );
 
     //buffer = "#include <template_profiler.hpp>\n";
     std::string buffer =
