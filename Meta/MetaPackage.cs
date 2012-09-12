@@ -249,7 +249,7 @@ namespace Meta
                 {
                     if (ProjectHelper.IsCPPProject(projectItemId, hierarchy))
                     {
-                        menuCommand.Visible = true;
+                        menuCommand.Visible = false;
                         menuCommand.Text = "Convert to x64";
                         return;
                     }                    
