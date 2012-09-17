@@ -300,7 +300,7 @@ namespace Meta
             }
         }
                 
-        public string GenerateCLCmdArgs()
+        public string GenerateCLCmdArgs(bool forceCompileOnly = true)
         {
             StringBuilder cmd = new StringBuilder();
 
@@ -405,7 +405,7 @@ namespace Meta
             //else if( cltool.CompileAsManaged == compileAsManagedOptions.managedNotSet )
             //    cmd.Append( " /clr:noAssembly");
 
-            if( cltool.CompileOnly )
+            if( forceCompileOnly || cltool.CompileOnly )
                 cmd.Append( " /c");
 
             if( cltool.DebugInformationFormat == debugOption.debugDisabled )
@@ -585,7 +585,7 @@ namespace Meta
             return s;
         }
         
-        public string GenerateCLCmdArgs(string filename, bool skipPrecompiledHeader = true, bool skipObjectFile = true, bool skipMinimalRebuild = true)
+        public string GenerateCLCmdArgs(string filename, bool skipPrecompiledHeader = true, bool skipObjectFile = true, bool skipMinimalRebuild = true, bool forceCompileOnly = true)
         {
             VCFile file = GetVCFile(filename);
 
@@ -709,7 +709,7 @@ namespace Meta
             //else if( fileTool.CompileAsManaged == compileAsManagedOptions.managedNotSet )
             //    cmd.Append( " /clr:noAssembly");
 
-            if (fileTool.CompileOnly)
+            if (forceCompileOnly || fileTool.CompileOnly)
                 cmd.Append(" /c");
 
             if (fileTool.DebugInformationFormat == debugOption.debugDisabled)

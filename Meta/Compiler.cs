@@ -99,6 +99,7 @@ namespace Meta
             // Collect the net view command output.
             if (!String.IsNullOrEmpty(outLine.Data))
             {
+                Debug.WriteLine(Environment.NewLine + "  " + outLine.Data);
                 //buildPane.OutputStringThreadSafe(Environment.NewLine + "  " + outLine.Data);
                 //profile_output.WriteLine(outLine.Data);
             }
@@ -110,6 +111,7 @@ namespace Meta
             // to write and an error file has been specified.
             if (!String.IsNullOrEmpty(errLine.Data))
             {
+                Debug.WriteLine(errLine.Data + Environment.NewLine);
                 buildPane.OutputStringThreadSafe(errLine.Data+Environment.NewLine);
                 //profile_output.WriteLine(errLine.Data);
             }
@@ -120,7 +122,7 @@ namespace Meta
             try
             {
                 VCFile file = clTool.GetVCFile(filename);
-                string args = clTool.GenerateCLCmdArgs(filename, false, false, true);
+                string args = clTool.GenerateCLCmdArgs(filename, false, false, true, true);
                 string clWithEnv = clTool.CompilerExecutableWithEnvAsCmdArgs;
 
                 if (!System.IO.File.Exists(file.FullPath))

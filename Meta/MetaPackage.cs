@@ -45,7 +45,7 @@ namespace Meta
     /// IVsPackage interface and uses the registration attributes defined in the framework to 
     /// register itself and its components with the shell.
     /// </summary>
-    [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
+    //[DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
     [ProvideOptionPage(typeof(MetaPackage.Options), "Meta", "Options Page", 1000, 1001, false)]
     // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
     // a package.
@@ -281,22 +281,23 @@ namespace Meta
                     if (isProfilingBuildTime==0)
                     {
                         EnvDTE.Project project = ProjectHelper.GetProject(hierarchy);
-                        
-                        if( ProjectHelper.IsCPPProject(pitemid, hierarchy) )
-                            CleanProject(hierarchy);
-                        
-                        ClaimBuildState();
+                                                
                         Options opts = GetOptions();
                         if (ProjectHelper.IsCPPNode(pitemid, hierarchy))
                         {
+                            ClaimBuildState();
                             object value;
                             hierarchy.GetProperty(pitemid, (int)__VSHPROPID.VSHPROPID_Name, out value);
                             Debug.Assert(value != null);
-                            if( value != null )
+                            if (value != null)
                                 buildProfiler = new BuildProfiler(project, opts.StackMaxSize, GetBuildOutputPane(), GetProfileOutputPane(), this.FreeBuildState, value.ToString());
                         }
                         else
+                        {
+                            CleanProject(hierarchy);
+                            ClaimBuildState();
                             buildProfiler = new BuildProfiler(project, opts.StackMaxSize, GetBuildOutputPane(), GetProfileOutputPane(), this.FreeBuildState);
+                        }
                     }
                     else
                     {
