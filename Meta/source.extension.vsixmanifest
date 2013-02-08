@@ -1,31 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
-  <Identifier Id="92203069-8ed1-4b40-8356-b4cfab306222">
-    <Name>Meta</Name>
-    <Author>Brandon Kohn</Author>
-    <Version>0.1.8</Version>
-    <Description xml:space="preserve">A collection of utilities for template meta-programming with C++ based on Boost.
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Version="0.1.8" Id="92203069-8ed1-4b40-8356-b4cfab306222" Language="en-US" Publisher="Brandon Kohn" />
+    <DisplayName>Meta</DisplayName>
+    <Description>
+      A collection of utilities for template meta-programming with C++ based on Boost.
 
-Features: 
-* Per file compile time profiling
-* Profiling of template instantiations via 
-  the boost template_profiler toolset.</Description>
-    <Locale>1033</Locale>
-    <MoreInfoUrl>https://github.com/brandon-kohn/Meta</MoreInfoUrl>
+      Features:
+      * Per file compile time profiling
+      * Profiling of template instantiations via
+      the boost template_profiler toolset.
+    </Description>
+    <MoreInfo>https://github.com/brandon-kohn/Meta</MoreInfo>
     <License>License.txt</License>
     <GettingStartedGuide>https://github.com/brandon-kohn/Meta/wiki/Meta-Home</GettingStartedGuide>
+    <ReleaseNotes></ReleaseNotes>
     <Icon>Package.ico</Icon>
     <PreviewImage>Preview.png</PreviewImage>
-    <InstalledByMsi>false</InstalledByMsi>
-    <SupportedProducts>
-      <VisualStudio Version="11.0">
-        <Edition>Ultimate</Edition>
-        <Edition>Premium</Edition>
-        <Edition>Pro</Edition>
-      </VisualStudio>
-    </SupportedProducts>
-    <SupportedFrameworkRuntimeEdition MinVersion="4.5" MaxVersion="4.5" />
-  </Identifier>
-  <References />
-  <Content />
-</Vsix>
+  </Metadata>
+
+  <Installation InstalledByMsi="false">
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Ultimate" Version="11.0" />
+  </Installation>
+
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.11.0" DisplayName="Visual Studio MPF 11.0" d:Source="Installed" Version="11.0" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+  </Assets>
+</PackageManifest>

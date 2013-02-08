@@ -51,3 +51,4 @@ F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_IntegrationTests\bin\Release\Micr
 F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_IntegrationTests\obj\Release\Meta_IntegrationTests.csprojResolveAssemblyReference.cache
 F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_IntegrationTests\obj\Release\Meta_IntegrationTests.dll
 F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_IntegrationTests\obj\Release\Meta_IntegrationTests.pdb
+F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_IntegrationTests\bin\Release\License.txt

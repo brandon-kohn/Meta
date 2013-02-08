@@ -57,3 +57,4 @@ F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_UnitTests\bin\Release\Microsoft.V
 F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.csprojResolveAssemblyReference.cache
 F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.dll
 F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.pdb
+F:\Projects\VC10\tools\git\Meta_vc11\Meta\Meta_UnitTests\bin\Release\License.txt

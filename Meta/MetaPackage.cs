@@ -56,8 +56,10 @@ namespace Meta
     // in the Help/About dialog of Visual Studio.
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
     [Guid(GuidList.guidMetaPkgString)]
-    [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
-    //[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string)]
+    [ProvideAutoLoad("D2567162-F94F-4091-8798-A096E61B8B50")]//!Solution open
+    //[ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]//!Solution exists
+    [ProvideAutoLoad(Microsoft.VisualStudio.Shell.Interop.UIContextGuids80.SolutionExists)]  
+     //[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string)]
     public sealed class MetaPackage : Package, IVsShellPropertyEvents, IVsSolutionEvents, IVsUpdateSolutionEvents2
     {
         private uint shellPropertyChangesCookie;

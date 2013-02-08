@@ -68,7 +68,17 @@ namespace Meta
         {
             cancelProfile = true;
             if (profileProcess != null)
-                profileProcess.Kill();
+            {
+                try
+                {
+                    profileProcess.Kill();
+                }
+                catch (System.Exception ex)
+                {
+                    profileProcess = null;
+                }
+            }
+                
         }
 
         public void Initialize()
