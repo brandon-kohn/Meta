@@ -45,7 +45,9 @@ namespace Meta
     /// IVsPackage interface and uses the registration attributes defined in the framework to 
     /// register itself and its components with the shell.
     /// </summary>
-    [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
+    [DefaultRegistryRoot(MetaPackageConstants.DefaultRegistryRoot)]
+    // This attribute is needed to let the shell know that this package exposes some menus.
+    [ProvideMenuResource(MetaPackageConstants.MenuResourceId, 1)]
     [ProvideOptionPage(typeof(MetaPackage.Options), "Meta", "Options Page", 1000, 1001, false)]
     // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
     // a package.
@@ -53,10 +55,9 @@ namespace Meta
     // This attribute is used to register the informations needed to show the this package
     // in the Help/About dialog of Visual Studio.
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
-    // This attribute is needed to let the shell know that this package exposes some menus.
-    [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(GuidList.guidMetaPkgString)]
-    [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]//Auto load on UICONTEXT_SolutionExists
+    [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
+    //[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string)]
     public sealed class MetaPackage : Package, IVsShellPropertyEvents, IVsSolutionEvents, IVsUpdateSolutionEvents2
     {
         private uint shellPropertyChangesCookie;
@@ -281,14 +282,11 @@ namespace Meta
                     if (isProfilingBuildTime==0)
                     {
                         EnvDTE.Project project = ProjectHelper.GetProject(hierarchy);
-                        
-                        if( ProjectHelper.IsCPPProject(pitemid, hierarchy) )
-                            CleanProject(hierarchy);
-                        
-                        ClaimBuildState();
+                                                
                         Options opts = GetOptions();
                         if (ProjectHelper.IsCPPNode(pitemid, hierarchy))
                         {
+                            ClaimBuildState();
                             object value;
                             hierarchy.GetProperty(pitemid, (int)__VSHPROPID.VSHPROPID_Name, out value);
                             Debug.Assert(value != null);
@@ -296,7 +294,11 @@ namespace Meta
                                 buildProfiler = new BuildProfiler(project, opts.StackMaxSize, GetBuildOutputPane(), GetProfileOutputPane(), this.FreeBuildState, value.ToString());
                         }
                         else
+                        {
+                            CleanProject(hierarchy);
+                            ClaimBuildState();
                             buildProfiler = new BuildProfiler(project, opts.StackMaxSize, GetBuildOutputPane(), GetProfileOutputPane(), this.FreeBuildState);
+                        }
                     }
                     else
                     {
@@ -992,5 +994,19 @@ namespace Meta
             //! The free-er should be holding the lock.
             Debug.Assert(b);
         }
+    }
+
+    public static class MetaPackageConstants
+    {
+#if VS2010
+        public const string DefaultRegistryRoot = @"Software\Microsoft\VisualStudio\10.0";
+        public const string MenuResourceId = "Menus.ctmenu";
+#elif VS2008
+        public const string DefaultRegistryRoot = @"Software\Microsoft\VisualStudio\9.0";
+        public const int MenuResourceId = 1000;
+#else
+        public const string DefaultRegistryRoot = @"Software\Microsoft\VisualStudio\11.0";
+        public const string MenuResourceId = "Menus.ctmenu";
+#endif
     }
 }
