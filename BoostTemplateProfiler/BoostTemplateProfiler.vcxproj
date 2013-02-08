@@ -42,15 +42,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>c:\Projects\boost_release\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;C:\WINDDK\3790.1830\inc\ddk\w2k;$(IncludePath)</IncludePath>
+    <IncludePath>f:\Projects\boost_release\;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;f:\WINDDK\3790.1830\inc\ddk\w2k;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)\$(Configuration)\</OutDir>
     <EnableManagedIncrementalBuild>true</EnableManagedIncrementalBuild>
-    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(LibraryPath);c:\Projects\boost_release\stage\lib</LibraryPath>
+    <LibraryPath>f:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(LibraryPath);f:\Projects\boost_release\stage\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Projects\boost\boost_1_48_0\include;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;C:\WINDDK\3790.1830\inc\ddk\w2k;$(IncludePath)</IncludePath>
+    <IncludePath>f:\Projects\boost_release;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;C:\WINDDK\3790.1830\inc\ddk\w2k;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)\$(Configuration)\</OutDir>
-    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(LibraryPath);C:\Projects\boost\boost_1_48_0\Lib_VC10x86</LibraryPath>
+    <LibraryPath>f:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(LibraryPath);f:\Projects\boost_release\stage\lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
