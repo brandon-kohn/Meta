@@ -42,3 +42,4 @@ F:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Release\Microsoft
 F:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Release\Meta.pdb
 F:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Release\Microsoft.VSSDK.TestHostFramework.pdb
 F:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Release\Microsoft.VisualStudio.Settings.xml
+F:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Release\BoostTemplateProfiler.dll

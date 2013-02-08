@@ -182,6 +182,10 @@
     <None Include="Resources\Images_32bit.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BoostTemplateProfiler.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="License.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -193,13 +197,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BoostTemplateProfiler\BoostTemplateProfiler.vcxproj">
-      <Project>{11770041-221A-493E-9F30-815F16C9E1BB}</Project>
-      <Name>BoostTemplateProfiler</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>

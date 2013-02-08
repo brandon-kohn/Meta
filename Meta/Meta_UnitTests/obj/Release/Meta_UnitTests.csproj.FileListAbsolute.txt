@@ -48,3 +48,4 @@ F:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Meta.pdb
 F:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VSSDK.UnitTestLibrary.xml
 F:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VSSDK.TestHostFramework.pdb
 F:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VisualStudio.Settings.xml
+F:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\BoostTemplateProfiler.dll
