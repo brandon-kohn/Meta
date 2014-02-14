@@ -131,7 +131,7 @@ namespace Meta
             }
         }
 
-        private string version="10.00";
+        private string version="12.00";
         private VCProject        project = null;
         private IVCCollection    configurations = null;
         private IVCCollection    tools = null;

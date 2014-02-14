@@ -1,13 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meta", "Meta\Meta.csproj", "{ED4FB09D-8500-4348-8E5D-6738183259CF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{11770041-221A-493E-9F30-815F16C9E1BB} = {11770041-221A-493E-9F30-815F16C9E1BB}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meta_IntegrationTests", "Meta\Meta_IntegrationTests\Meta_IntegrationTests.csproj", "{C6FE3B13-B400-4AE9-A511-124B2795B303}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8A8AF527-5BB9-41C2-81E2-07F9FB21D412}"
 	ProjectSection(SolutionItems) = preProject
 		IntegrationTests.testsettings = IntegrationTests.testsettings
@@ -15,16 +10,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		UnitTests.testsettings = UnitTests.testsettings
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meta", "Meta\Meta.csproj", "{ED4FB09D-8500-4348-8E5D-6738183259CF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11770041-221A-493E-9F30-815F16C9E1BB} = {11770041-221A-493E-9F30-815F16C9E1BB}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meta_IntegrationTests", "Meta\Meta_IntegrationTests\Meta_IntegrationTests.csproj", "{C6FE3B13-B400-4AE9-A511-124B2795B303}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11770041-221A-493E-9F30-815F16C9E1BB} = {11770041-221A-493E-9F30-815F16C9E1BB}
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meta_UnitTests", "Meta\Meta_UnitTests\Meta_UnitTests.csproj", "{CE048A3D-988F-4AB7-A656-52016E3BE6DB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BoostTemplateProfiler", "BoostTemplateProfiler\BoostTemplateProfiler.vcxproj", "{11770041-221A-493E-9F30-815F16C9E1BB}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Installer\Installer.wixproj", "{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}"
-EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = Meta.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -84,20 +84,11 @@ Global
 		{11770041-221A-493E-9F30-815F16C9E1BB}.Release|Win32.ActiveCfg = Release|Win32
 		{11770041-221A-493E-9F30-815F16C9E1BB}.Release|Win32.Build.0 = Release|Win32
 		{11770041-221A-493E-9F30-815F16C9E1BB}.Release|x86.ActiveCfg = Release|Win32
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Debug|Win32.ActiveCfg = Debug|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Debug|x86.ActiveCfg = Debug|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Debug|x86.Build.0 = Debug|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Release|Any CPU.ActiveCfg = Release|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Release|Mixed Platforms.Build.0 = Release|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Release|Win32.ActiveCfg = Release|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Release|x86.ActiveCfg = Release|x86
-		{0E4111B4-4F3F-47AC-ABCD-36A2AD5C50FF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Meta.vsmdi
 	EndGlobalSection
 EndGlobal

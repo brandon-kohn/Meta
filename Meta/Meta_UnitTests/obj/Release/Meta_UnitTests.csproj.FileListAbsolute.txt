@@ -33,3 +33,16 @@ C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.p
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VisualStudio.Settings.dll
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\bin\Release\Microsoft.VisualStudio.Settings.xml
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.csprojResolveAssemblyReference.cache
+C:\Users\Brandon\Documents\GitHub\Meta\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.csprojResolveAssemblyReference.cache
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.csprojResolveAssemblyReference.cache
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\bin\Release\Package.ico
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\bin\Release\Preview.png
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\bin\Release\Meta_UnitTests.dll
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\bin\Release\Meta_UnitTests.pdb
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\bin\Release\Microsoft.VSSDK.TestHostFramework.dll
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\bin\Release\Microsoft.VSSDK.UnitTestLibrary.dll
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\bin\Release\Microsoft.VSSDK.TestHostFramework.pdb
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.dll
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\obj\Release\Meta_UnitTests.pdb
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\bin\Release\Meta.dll
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_UnitTests\bin\Release\Meta.pdb

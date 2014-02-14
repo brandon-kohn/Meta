@@ -15,7 +15,7 @@ using System.Diagnostics;
 
 namespace Meta
 {    
-    public class ListIterator<T> : IEnumerator<T>, IEquatable<ListIterator<T>>
+    public class ListIterator<T> : IEnumerator<T>, IEquatable<ListIterator<T>>, IDisposable
     {        
         // Enumerators are positioned before the first element
         // until the first MoveNext() call.
@@ -30,9 +30,17 @@ namespace Meta
 
         public void Dispose()
         {
+            Dispose(true);
 
+            // Use SupressFinalize in case a subclass 
+            // of this type implements a finalizer.
+            GC.SuppressFinalize(this);
         }
-
+        protected virtual void Dispose(bool disposing)
+        {
+            
+        }
+        
         public bool MoveNext()
         {
             position = Math.Min(position + 1, list.Count);

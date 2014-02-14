@@ -40,6 +40,8 @@ namespace Meta
         /// Signals to shutdown this active object
         /// </summary>
         void Shutdown();
+
+        void Dispose();
     }
     
     /// <summary>
@@ -49,7 +51,7 @@ namespace Meta
     /// Although there exists a vast number of active objects patterns (in Java they are just "runnable")
     /// scattered, one of the best I found is located at http://blog.gurock.com/wp-content/uploads/2008/01/activeobjects.pdf
     /// </remarks>
-    public class ActiveObject : IActiveObject
+    public class ActiveObject : IActiveObject, IDisposable
     {
         /// <summary>
         /// Name of this active object
@@ -187,5 +189,32 @@ namespace Meta
                 m_ShutdownEvent = null;
             }
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            // Use SupressFinalize in case a subclass 
+            // of this type implements a finalizer.
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if( m_SignalObject != null )
+                        m_SignalObject.Dispose();
+                    if( m_ShutdownEvent != null )
+                        m_ShutdownEvent.Dispose();
+                }
+
+                // Indicate that the instance has been disposed.
+                _disposed = true;
+            }
+        }
+
+        private bool _disposed = false;
     }
 }

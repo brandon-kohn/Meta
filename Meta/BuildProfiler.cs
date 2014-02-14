@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 namespace Meta
 {
-    class BuildProfiler
+    class BuildProfiler : IDisposable
     {
         private IActiveObject profiler;
         private EnvDTE.Project project;
@@ -181,5 +181,32 @@ namespace Meta
                 signalFinished();
             }
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            // Use SupressFinalize in case a subclass 
+            // of this type implements a finalizer.
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if( profiler != null )
+                        profiler.Dispose();
+                    if( cl != null )
+                        cl.Dispose();
+                }
+
+                // Indicate that the instance has been disposed.
+                _disposed = true;
+            }
+        }
+
+        private bool _disposed = false;
     }
 }

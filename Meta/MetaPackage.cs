@@ -45,7 +45,7 @@ namespace Meta
     /// IVsPackage interface and uses the registration attributes defined in the framework to 
     /// register itself and its components with the shell.
     /// </summary>
-    [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
+    [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\12.0")]
     [ProvideOptionPage(typeof(MetaPackage.Options), "Meta", "Options Page", 1000, 1001, false)]
     // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
     // a package.
@@ -57,7 +57,7 @@ namespace Meta
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(GuidList.guidMetaPkgString)]
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]//Auto load on UICONTEXT_SolutionExists
-    public sealed class MetaPackage : Package, IVsShellPropertyEvents, IVsSolutionEvents, IVsUpdateSolutionEvents2
+    public sealed class MetaPackage : Package, IVsShellPropertyEvents, IVsSolutionEvents, IVsUpdateSolutionEvents2, IDisposable
     {
         private uint shellPropertyChangesCookie;
         private uint solutionEventsCookie;
@@ -367,7 +367,7 @@ namespace Meta
                     {
                         try
                         {
-                            GenerateBoostBuildFile gen = new GenerateBoostBuildFile(prj);
+                            //GenerateBoostBuildFile gen = new GenerateBoostBuildFile(prj);
                         }
                         catch (System.Exception)
                         {
@@ -378,7 +378,7 @@ namespace Meta
                 }
             }
         }
-
+                
         public MetaPackage.Options GetOptions()
         {
             var hw = GetDialogPage(typeof(MetaPackage.Options)) as Options;
@@ -400,7 +400,32 @@ namespace Meta
                 solution.UnadviseSolutionEvents(solutionEventsCookie);
 
             BuildManager.DefaultBuildManager.CancelAllSubmissions();
+
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if( buildProfiler != null )
+                        buildProfiler.Dispose();
+                    if( templateProfiler != null )
+                        templateProfiler.Dispose();
+                }
+
+                // Indicate that the instance has been disposed.
+                _disposed = true;
+            }
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            // Use SupressFinalize in case a subclass 
+            // of this type implements a finalizer.
+            GC.SuppressFinalize(this);
+        }
+   
+        private bool _disposed = false;
 
         public IVsHierarchy GetHierarchy(System.IServiceProvider serviceProvider, EnvDTE.Project project)
         {
@@ -607,10 +632,18 @@ namespace Meta
             System.Collections.Generic.ICollection<MSBuild.Project> loadedProjects = MSBuild.ProjectCollection.GlobalProjectCollection.GetLoadedProjects(proj.FullName);
             var iter = loadedProjects.GetEnumerator();
             bool b = iter.MoveNext();
-            Debug.Assert(b);
-            if(!b)
+
+            MSBuild.Project buildProject = null;
+            if (!b)
+            {
+                buildProject = new MSBuild.Project(proj.FullName);
+            }
+            else
+                buildProject = iter.Current;
+            
+            if( buildProject == null )
                 throw new InvalidOperationException();
-            MSBuild.Project buildProject = iter.Current;
+            //MSBuild.Project buildProject = iter.Current;
             MSBuildExec.ProjectInstance pInst = buildProject.CreateProjectInstance();
             if( onlyProject )
                 pInst.SetProperty("BuildProjectReferences", "false");
