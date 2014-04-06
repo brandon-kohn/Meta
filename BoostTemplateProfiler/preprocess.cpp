@@ -24,7 +24,7 @@
 #include "postprocess.hpp"
 
 #include "boost/assert.hpp"
-#include "boost/concept_check.hpp"
+//#include "boost/concept_check.hpp"
 #include "boost/interprocess/file_mapping.hpp"
 #include "boost/interprocess/mapped_region.hpp"
  #include <boost/spirit/include/classic_file_iterator.hpp>
@@ -87,8 +87,9 @@ namespace regex
     //cregex const string            = keep( as_xpr('"') >> *( ~( set = '\\','"' ) ) >> *(( '\\' >> _ ) >> *( ~( set = '\\','"') ) ) >> '"');
     //! Visual studio strips comments from the preprocessor.
     //cregex const comment           = keep( "//" /*>> backslashed_lines*/ | "/*" >> keep( *( ~(set='*') | '*' >> ~before('/') ) ) >> "*/" );
-    cregex const pp                = keep( '#' >> /*backslashed_lines*/ /*-*/*~_ln >> _ln );
-    cregex const ignored           = keep( string /*| comment*/ | pp );
+    cregex const blank_line        = keep( *_s >> _ln );
+    cregex const pp                = keep( *_s >> '#' >> /*backslashed_lines*/ /*-*/*~_ln >> _ln );
+    cregex const ignored           = keep( blank_line | string /*| comment*/ | pp );
     cregex const parens            = make_parens();
     cregex const ws                = _s | _ln /*| comment*/ | pp;
     
@@ -107,7 +108,7 @@ namespace regex
     cregex const class_header =
         keep
         (
-            keep(!templat) >>
+            //keep(!templat) >>
             keep( _b >> ( as_xpr( "class" ) | "struct" ) ) >>
             keep( +ws >> +_w                             ) >>
             keep( *keep( ~(set= '(',')','{',';','=') | parens | ignored ) ) >>
@@ -134,7 +135,7 @@ struct formatter : boost::noncopyable
 
         typedef cmatch::value_type sub_match;
 
-        BOOST_ASSERT( what.size() == 6 );
+        BOOST_ASSERT(what.size() == 5);//6 );
 
         cmatch::const_iterator const p_match( std::find_if( what.begin() + 1, what.end(), []( sub_match const & match ){ return match.matched; } ) );
         BOOST_ASSERT_MSG( p_match != what.end(), "Something should have matched." );
@@ -143,8 +144,9 @@ struct formatter : boost::noncopyable
         enum match_type_t
         {
             ignore = 1,
-            class_hdr,
-            function_hdr,
+            header,
+//             class_hdr,
+//             function_hdr,
             open_brace,
             close_brace
         };
@@ -155,22 +157,22 @@ struct formatter : boost::noncopyable
             case ignore:
                 out = std::copy( match.first, match.second, out );
                 break;
-            case class_hdr:
+            case header://case class_hdr:
             {
                 braces.push_back( " TEMPLATE_PROFILE_EXIT() }" );
                 static char const tail[] = " TEMPLATE_PROFILE_ENTER()";
-                out = std::copy( match.first         , match.second          , out );
+                out = std::copy( match.first, match.second, out );
                 out = std::copy( boost::begin( tail ), boost::end( tail ) - 1, out );
                 break;
             }
-            case function_hdr:
-            {
-                braces.push_back( " TEMPLATE_PROFILE_EXIT() }" );
-                static char const tail[] = " TEMPLATE_PROFILE_ENTER()";
-                out = std::copy( match.first         , match.second          , out );
-                out = std::copy( boost::begin( tail ), boost::end( tail ) - 1, out );
-                break;
-            }
+//             case function_hdr:
+//             {
+//                 braces.push_back( " TEMPLATE_PROFILE_EXIT() }" );
+//                 static char const tail[] = " TEMPLATE_PROFILE_ENTER()";
+//                 out = std::copy( match.first, match.second, out );
+//                 out = std::copy( boost::begin( tail ), boost::end( tail ) - 1, out );
+//                 break;
+//             }
             case open_brace:
                 braces.push_back( "}" );
                 out = std::copy( match.first, match.second, out );
@@ -214,7 +216,8 @@ void preprocess(char const * const p_filename, const char* const p_output_file)
 
     regex::match_results<char const *> search_results;
     using namespace regex;
-    static const cregex  main_regex( (s1= ignored) | (s2=keep(class_header)) | (s3=keep(function_header)) | (s4='{') | (s5='}') );
+    //static const cregex  main_regex( (s1= ignored) | (s2=keep(class_header)) | (s3=keep(function_header)) | (s4='{') | (s5='}') );
+    static const cregex  main_regex((s1 = ignored) | (s2 = keep(class_header | function_header)) | (s3 = '{') | (s4 = '}'));
 
     //buffer = "#include <template_profiler.hpp>\n";
     std::string buffer =
