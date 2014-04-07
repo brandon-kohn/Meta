@@ -30,14 +30,14 @@ C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Release\Microsoft
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\bin\Release\Microsoft.VisualStudio.Settings.xml
 C:\Projects\VC10\tools\git\Meta\Meta\Meta_IntegrationTests\obj\Release\Meta_IntegrationTests.csprojResolveAssemblyReference.cache
 C:\Users\Brandon\Documents\GitHub\Meta\Meta\Meta_IntegrationTests\obj\Release\Meta_IntegrationTests.csprojResolveAssemblyReference.cache
-C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\obj\Release\Meta_IntegrationTests.csprojResolveAssemblyReference.cache
 C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Package.ico
 C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Preview.png
 C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Meta_IntegrationTests.dll
 C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Meta_IntegrationTests.pdb
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Meta.dll
 C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Microsoft.VSSDK.TestHostFramework.dll
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Meta.pdb
 C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Microsoft.VSSDK.TestHostFramework.pdb
+C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\obj\Release\Meta_IntegrationTests.csprojResolveAssemblyReference.cache
 C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\obj\Release\Meta_IntegrationTests.dll
 C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\obj\Release\Meta_IntegrationTests.pdb
-C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Meta.dll
-C:\Users\Brandon\Documents\GitHub\Meta_vc12\Meta\Meta_IntegrationTests\bin\Release\Meta.pdb

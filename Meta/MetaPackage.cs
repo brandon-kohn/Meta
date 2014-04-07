@@ -1,5 +1,5 @@
 ﻿//
-//! Copyright © 2008-2011
+//! Copyright © 2008-2014
 //! Brandon Kohn
 //
 //  Distributed under the Boost Software License, Version 1.0. (See
@@ -56,8 +56,11 @@ namespace Meta
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(GuidList.guidMetaPkgString)]
-    [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]//Auto load on UICONTEXT_SolutionExists
-    //[ProvideAutoLoad("D2567162-F94F-4091-8798-A096E61B8B50")]
+    //[ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]//Auto load on UICONTEXT_SolutionExists
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
+    
+    //!! NOTE: When compiling a new version.. remember to run devenv.exe /setup to absorb new pkgdef items.
+        
     public sealed class MetaPackage : Package, IVsShellPropertyEvents, IVsSolutionEvents, IVsUpdateSolutionEvents2, IDisposable
     {
         private uint shellPropertyChangesCookie;
