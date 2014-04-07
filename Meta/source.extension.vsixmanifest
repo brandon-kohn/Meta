@@ -3,7 +3,7 @@
   <Identifier Id="92203069-8ed1-4b40-8356-b4cfab306222">
     <Name>Meta</Name>
     <Author>Brandon Kohn</Author>
-    <Version>0.1.7</Version>
+    <Version>0.1.9</Version>
     <Description xml:space="preserve">A collection of utilities for template meta-programming with C++ based on Boost.
 
 Features: 

@@ -261,7 +261,7 @@ namespace Meta
                             if (!File.Exists(outputPreprocessed))
                                 throw new FileNotFoundException(outputPreprocessed);
 
-                            profilePane.OutputStringThreadSafe("Processing Instrumented Code..." + Environment.NewLine);
+                            //profilePane.OutputStringThreadSafe("Processing Instrumented Code..." + Environment.NewLine);
                             NativeMethods.TemplateProfilePreprocess(outputPreprocessed, outputPreprocessedCpp);
                         }
                         catch( FileNotFoundException /*ex*/ )
