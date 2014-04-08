@@ -276,7 +276,7 @@ namespace Meta
                         }
                         finally
                         {
-                            //File.Delete(outputPreprocessed);
+                            File.Delete(outputPreprocessed);
                         }
 
                         //! Now compile the output and put the output into another file to be input to the postprocessor.
@@ -297,7 +297,7 @@ namespace Meta
                         }
                         finally
                         {
-                            //File.Delete(outputPreprocessedCpp);
+                            File.Delete(outputPreprocessedCpp);
                             File.Delete(outputPreprocessed + ".obj");
                         }
 
@@ -318,7 +318,7 @@ namespace Meta
                         }
                         finally
                         {
-                            //File.Delete(outputProfile);
+                            File.Delete(outputProfile);
                         }
                     }
                 }
