@@ -24,7 +24,7 @@
 #include "postprocess.hpp"
 
 #include "boost/assert.hpp"
-//#include "boost/concept_check.hpp"
+#include "boost/concept_check.hpp"
 #include "boost/interprocess/file_mapping.hpp"
 #include "boost/interprocess/mapped_region.hpp"
  #include <boost/spirit/include/classic_file_iterator.hpp>
@@ -60,7 +60,6 @@ namespace boost
 namespace regex
 {
     using namespace boost::xpressive;
-    namespace xp = boost::xpressive;
 
     typedef boost::xpressive::basic_regex<boost::spirit::classic::file_iterator<> > fregex;
     typedef boost::xpressive::match_results<boost::spirit::classic::file_iterator<> > fmatch;
@@ -88,64 +87,30 @@ namespace regex
     //cregex const string            = keep( as_xpr('"') >> *( ~( set = '\\','"' ) ) >> *(( '\\' >> _ ) >> *( ~( set = '\\','"') ) ) >> '"');
     //! Visual studio strips comments from the preprocessor.
     //cregex const comment           = keep( "//" /*>> backslashed_lines*/ | "/*" >> keep( *( ~(set='*') | '*' >> ~before('/') ) ) >> "*/" );
-    cregex const blank_line        = keep( *_s >> _ln );
-    cregex const pp                = keep( *_s >> '#' >> /*backslashed_lines*/ /*-*/*~_ln >> _ln );
+    cregex const pp                = keep( '#' >> /*backslashed_lines*/ /*-*/*~_ln >> _ln );
+    cregex const ignored           = keep( string /*| comment*/ | pp );
+    cregex const parens            = make_parens();
     cregex const ws                = _s | _ln /*| comment*/ | pp;
-    cregex const ignored           = keep(blank_line | string /*| comment*/ | pp);
-
-    cregex const enumeration =
+    cregex const cstart = (bos | after((set = '{', '}', ';','>'))) >> keep(*ws);
+    cregex const class_header =        
         keep
         (
-            (_b >> as_xpr("enum") >> _b) >> *ws >> //! enum keyword
-            !(_b >> as_xpr("class") >> _b) >>    //! optional class keyword
-            (+ws >> *_w) >> *ws >>  //! optional enumerated type name
-            as_xpr('{') >> //! opening brace
-            (-*(~(set = '}'))) >> //! enumerations
-            ('}' >> *ws >> ';') //! closing brace and semicolon.
-        );
-        
-    cregex const parens = make_parens();
-
-    //! Class Header:
-
-    cregex const class_header =
-        //~after(_b >> "enum" >> _b) >> //! make sure it's not a C++11 enum.
-        keep
-        (
-            *ws >>
-            keep(_b >> (as_xpr("class") | "struct") >> _b) >> //! class or struct
-            keep(+ws >> +_w) >> //! typename
-            keep( *keep( ~(set= '(',')','{',';','=') | parens | ignored ) ) >> //! Not sure what all of this is.
+            cstart >>
+            keep( _b >> ( as_xpr( "class" ) | "struct" ) ) >>
+            keep( +ws >> +_w                             ) >>
+            keep( *keep( ~(set= '(',')','{',';','=') | parens | ignored ) ) >>
             '{'
         );
-
-    //! Function Header:
-
-    cregex const tmplate = _b >> as_xpr("template") >> *ws >> '<' >> -*(~(set = '>')) >> '>';
 
     //cregex const control    = ( _b >> ( as_xpr( "__attribute__" ) | "__if_exists" | "__if_not_exists" | "for" | "while" | "if" | "catch" | "switch" ) >> _b );
     cregex const control    = ( _b >> ( as_xpr( "if" ) | "for" | "while" | "switch" | "catch" | "__if_exists" | "__if_not_exists" | "__attribute__" ) >> _b );
     cregex const modifiers  = ( _b >> ( as_xpr( "const" ) | "try" | "volatile" ) >> _b );
-    cregex const start      = ( bos | after( (set= '{','}',';') ) ) >> keep( *ws );//! The beginning of the sequence or after another function/class.
-    cregex const body = ~before( control ) >> keep( ~(set= '{','}',';') );//! valid characters in function signature (inline, template/specializations, class name, function name)
-    cregex const args       = parens | ']';
+    cregex const fstart      = ( bos /*| cregex::compile( "\\G" )*/ | after( (set= '{','}',';') ) ) >> keep( *ws );
+    cregex const body       = ~before( control ) >> keep( ignored | ~(set= '{','}',';') );
+    cregex const end        = parens | ']';
     cregex const body_start = keep( *ws >> *(modifiers >> *ws) >> '{' );
 
-    cregex const function_header = keep(start >> *body >> args >> body_start);
-
-//     cregex const _signature = ~before(control) >> keep(~(set = '(', '{', ';'));//! valid characters in function signature (inline, template/specializations, class name, function name)
-//     cregex const function_header =
-//         keep
-//         (
-//             start >> //!bos or comes after }, {, or ; (and spaces/pp)
-//             //!tmplate >> *ws >> //! template declaration
-//             //!(_b >> as_xpr("inline") >> _b) >> //! inline declaration
-//             //! return type/class scope/function name
-//             +_signature >>
-//             !(as_xpr('(') >> *ws >> ')' >> *ws) >> //! operator ()
-//             parens >> 
-//             body_start
-//         );
+    cregex const function_header = keep( fstart >> ( *body >> end ) >> body_start );
 } // namespace regex
 
 struct formatter : boost::noncopyable
@@ -157,7 +122,7 @@ struct formatter : boost::noncopyable
 
         typedef cmatch::value_type sub_match;
 
-        BOOST_ASSERT(what.size() == 5);//6 );
+        BOOST_ASSERT( what.size() == 5 );
 
         cmatch::const_iterator const p_match( std::find_if( what.begin() + 1, what.end(), []( sub_match const & match ){ return match.matched; } ) );
         BOOST_ASSERT_MSG( p_match != what.end(), "Something should have matched." );
@@ -167,8 +132,6 @@ struct formatter : boost::noncopyable
         {
             ignore = 1,
             header,
-//             class_hdr,
-//             function_hdr,
             open_brace,
             close_brace
         };
@@ -179,7 +142,8 @@ struct formatter : boost::noncopyable
             case ignore:
                 out = std::copy( match.first, match.second, out );
                 break;
-            case header://case class_hdr:
+
+            case header:
             {
                 braces.push_back( " TEMPLATE_PROFILE_EXIT() }" );
                 static char const tail[] = " TEMPLATE_PROFILE_ENTER()";
@@ -187,14 +151,7 @@ struct formatter : boost::noncopyable
                 out = std::copy( boost::begin( tail ), boost::end( tail ) - 1, out );
                 break;
             }
-//             case function_hdr:
-//             {
-//                 braces.push_back( " TEMPLATE_PROFILE_EXIT() }" );
-//                 static char const tail[] = " TEMPLATE_PROFILE_ENTER()";
-//                 out = std::copy( match.first, match.second, out );
-//                 out = std::copy( boost::begin( tail ), boost::end( tail ) - 1, out );
-//                 break;
-//             }
+
             case open_brace:
                 braces.push_back( "}" );
                 out = std::copy( match.first, match.second, out );
@@ -238,8 +195,7 @@ void preprocess(char const * const p_filename, const char* const p_output_file)
 
     regex::match_results<char const *> search_results;
     using namespace regex;
-    //static const cregex  main_regex( (s1= ignored) | (s2=keep(class_header)) | (s3=keep(function_header)) | (s4='{') | (s5='}') );
-    static const cregex  main_regex((s1 = keep(ignored /*| enumeration*/)) | (s2 = keep(function_header | class_header)) | (s3 = '{') | (s4 = '}'));
+    static const cregex  main_regex( (s1= ignored) | (s2=keep( class_header | function_header )) | (s3='{') | (s4='}') );
 
     //buffer = "#include <template_profiler.hpp>\n";
     std::string buffer =
