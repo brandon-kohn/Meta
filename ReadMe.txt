@@ -1,4 +1,4 @@
-Meta is a Visual Studio 2010 VSPackage extension which whose purpose is to provide utilities for template meta-programming in C++. The library is implemented in C# for the VSPackage components with an unmanaged C++ core for the utilities.
+Meta is a Visual Studio (2013) VSPackage extension which whose purpose is to provide utilities for template meta-programming in C++. The library is implemented in C# for the VSPackage components with an unmanaged C++ core for the utilities.
 Features
 
 Meta currently features the following utilities:
