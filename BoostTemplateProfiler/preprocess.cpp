@@ -60,6 +60,7 @@ namespace boost
 namespace regex
 {
     using namespace boost::xpressive;
+    namespace xp = boost::xpressive;
 
     typedef boost::xpressive::basic_regex<boost::spirit::classic::file_iterator<> > fregex;
     typedef boost::xpressive::match_results<boost::spirit::classic::file_iterator<> > fmatch;
@@ -89,41 +90,62 @@ namespace regex
     //cregex const comment           = keep( "//" /*>> backslashed_lines*/ | "/*" >> keep( *( ~(set='*') | '*' >> ~before('/') ) ) >> "*/" );
     cregex const blank_line        = keep( *_s >> _ln );
     cregex const pp                = keep( *_s >> '#' >> /*backslashed_lines*/ /*-*/*~_ln >> _ln );
-    cregex const ignored           = keep( blank_line | string /*| comment*/ | pp );
-    cregex const parens            = make_parens();
     cregex const ws                = _s | _ln /*| comment*/ | pp;
-    
-    cregex const templat           =
+    cregex const ignored           = keep(blank_line | string /*| comment*/ | pp);
+
+    cregex const enumeration =
         keep
         (
-            _b >> as_xpr("template") >> *~(set='<') >> 
-            '<' >>
-            ( 
-                +~(set='>') | //! typical case? typename A, ..., typename Z=Z()
-                *_
-            ) >>
-            '>' 
+            (_b >> as_xpr("enum") >> _b) >> *ws >> //! enum keyword
+            !(_b >> as_xpr("class") >> _b) >>    //! optional class keyword
+            (+ws >> *_w) >> *ws >>  //! optional enumerated type name
+            as_xpr('{') >> //! opening brace
+            (-*(~(set = '}'))) >> //! enumerations
+            ('}' >> *ws >> ';') //! closing brace and semicolon.
         );
+        
+    cregex const parens = make_parens();
+
+    //! Class Header:
 
     cregex const class_header =
+        //~after(_b >> "enum" >> _b) >> //! make sure it's not a C++11 enum.
         keep
         (
-            //keep(!templat) >>
-            keep( _b >> ( as_xpr( "class" ) | "struct" ) ) >>
-            keep( +ws >> +_w                             ) >>
-            keep( *keep( ~(set= '(',')','{',';','=') | parens | ignored ) ) >>
+            *ws >>
+            keep(_b >> (as_xpr("class") | "struct") >> _b) >> //! class or struct
+            keep(+ws >> +_w) >> //! typename
+            keep( *keep( ~(set= '(',')','{',';','=') | parens | ignored ) ) >> //! Not sure what all of this is.
             '{'
         );
+
+    //! Function Header:
+
+    cregex const tmplate = _b >> as_xpr("template") >> *ws >> '<' >> -*(~(set = '>')) >> '>';
 
     //cregex const control    = ( _b >> ( as_xpr( "__attribute__" ) | "__if_exists" | "__if_not_exists" | "for" | "while" | "if" | "catch" | "switch" ) >> _b );
     cregex const control    = ( _b >> ( as_xpr( "if" ) | "for" | "while" | "switch" | "catch" | "__if_exists" | "__if_not_exists" | "__attribute__" ) >> _b );
     cregex const modifiers  = ( _b >> ( as_xpr( "const" ) | "try" | "volatile" ) >> _b );
-    cregex const start      = ( bos /*| cregex::compile( "\\G" )*/ | after( (set= '{','}',';') ) ) >> keep( *ws );
-    cregex const body       = ~before( control ) >> keep( ignored | ~(set= '{','}',';') );
-    cregex const end        = parens | ']';
+    cregex const start      = ( bos | after( (set= '{','}',';') ) ) >> keep( *ws );//! The beginning of the sequence or after another function/class.
+    cregex const body = ~before( control ) >> keep( ~(set= '{','}',';') );//! valid characters in function signature (inline, template/specializations, class name, function name)
+    cregex const args       = parens | ']';
     cregex const body_start = keep( *ws >> *(modifiers >> *ws) >> '{' );
 
-    cregex const function_header = keep( start >> ( *body >> end ) >> body_start );
+    cregex const function_header = keep(start >> *body >> args >> body_start);
+
+//     cregex const _signature = ~before(control) >> keep(~(set = '(', '{', ';'));//! valid characters in function signature (inline, template/specializations, class name, function name)
+//     cregex const function_header =
+//         keep
+//         (
+//             start >> //!bos or comes after }, {, or ; (and spaces/pp)
+//             //!tmplate >> *ws >> //! template declaration
+//             //!(_b >> as_xpr("inline") >> _b) >> //! inline declaration
+//             //! return type/class scope/function name
+//             +_signature >>
+//             !(as_xpr('(') >> *ws >> ')' >> *ws) >> //! operator ()
+//             parens >> 
+//             body_start
+//         );
 } // namespace regex
 
 struct formatter : boost::noncopyable
@@ -217,7 +239,7 @@ void preprocess(char const * const p_filename, const char* const p_output_file)
     regex::match_results<char const *> search_results;
     using namespace regex;
     //static const cregex  main_regex( (s1= ignored) | (s2=keep(class_header)) | (s3=keep(function_header)) | (s4='{') | (s5='}') );
-    static const cregex  main_regex((s1 = ignored) | (s2 = keep(class_header | function_header)) | (s3 = '{') | (s4 = '}'));
+    static const cregex  main_regex((s1 = keep(ignored /*| enumeration*/)) | (s2 = keep(function_header | class_header)) | (s3 = '{') | (s4 = '}'));
 
     //buffer = "#include <template_profiler.hpp>\n";
     std::string buffer =
