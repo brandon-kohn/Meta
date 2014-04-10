@@ -211,7 +211,7 @@ void preprocess(char const * const p_filename, const char* const p_output_file)
     using namespace regex;
     static const cregex  main_regex( (s1 = (ignored | keep(enum_class))) | (s2 = keep(class_header)) | (s3 = keep(function_header)) | (s4 = '{') | (s5 = '}') );
     
-#if defined(_DEBUG)
+#if (0)//defined(_DEBUG)
     std::ofstream logofs("g:\\Projects\\regex_log.log");
     boost::format fmt("//! regex: %1% : %2%");
 #define META_LOG_REGEX(logofs, r) \
@@ -236,6 +236,23 @@ void preprocess(char const * const p_filename, const char* const p_output_file)
     META_LOG_REGEX(logofs, main_regex);
 
     logofs.close();
+
+    //! Put this in regex_matcher.hpp (56)
+    // #if (0)//defined(_DEBUG)
+    //     xpression_adaptor<reference_wrapper<Next const>, matchable<BidiIter> > adaptor(boost::cref(next));
+    //     bool result = push_context_match(this->impl_, state, adaptor);
+    //     std::ofstream ofs("g:\\Projects\\regex_log.log", std::ios::app);
+    //     if (ofs.good())
+    //     {
+    //         ofs << "---------------------------------------------------" << std::endl;
+    //         ofs << "Regex (" << (result ? "M" : "U") << "): " << impl_.xpr_.get() << " at |" << std::string(state.cur_, state.cur_ + 50) << std::endl;
+    //     }
+    //     return result;
+    // #else
+    //     xpression_adaptor<reference_wrapper<Next const>, matchable<BidiIter> > adaptor(boost::cref(next));
+    //     return push_context_match(this->impl_, state, adaptor);
+    // #endif    
+
 #endif
 
     //buffer = "#include <template_profiler.hpp>\n";
