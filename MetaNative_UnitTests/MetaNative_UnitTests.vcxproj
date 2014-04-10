@@ -45,18 +45,20 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>F:\Projects\boost_legion\Lib_Win32\include\boost-1_55;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath);F:\Projects\boost_legion\Lib_Win32\lib</LibraryPath>
+    <ExecutablePath>$(ExecutablePath);../BoostTemplateProfiler/$(ConfigurationName)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>F:\Projects\boost_legion\Lib_Win32\include\boost-1_55;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;C:\WINDDK\3790.1830\inc\ddk\w2k;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(LibraryPath);F:\Projects\boost_legion\Lib_Win32\lib</LibraryPath>
+    <ExecutablePath>$(ExecutablePath);../BoostTemplateProfiler/$(ConfigurationName)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories);..</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
@@ -76,7 +78,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories);..</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
@@ -101,6 +103,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TestRegularExpressions.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BoostTemplateProfiler\BoostTemplateProfiler.vcxproj">
+      <Project>{11770041-221a-493e-9f30-815f16c9e1bb}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

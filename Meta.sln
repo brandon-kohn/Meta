@@ -25,6 +25,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BoostTemplateProfiler", "BoostTemplateProfiler\BoostTemplateProfiler.vcxproj", "{11770041-221A-493E-9F30-815F16C9E1BB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MetaNative_UnitTests", "MetaNative_UnitTests\MetaNative_UnitTests.vcxproj", "{9AACCAD3-F0FD-4E32-BE99-76FAD84ADB01}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11770041-221A-493E-9F30-815F16C9E1BB} = {11770041-221A-493E-9F30-815F16C9E1BB}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

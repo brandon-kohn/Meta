@@ -74,8 +74,11 @@ namespace Meta
         //! Is the package actively running a build.
         private int isProfilingBuildTime = 0;
         private int isProfilingInstantiations = 0;
+        private int isProfilingHeaders = 0;
         private TemplateProfiler templateProfiler;
         private BuildProfiler buildProfiler;
+        private HeaderProfiler headerProfiler;
+
         Object mutex = new Object();
         
         public class Options : DialogPage
@@ -145,8 +148,8 @@ namespace Meta
                 menuItem.BeforeQueryStatus += uiContex1Cmd_BeforeQueryStatus;
                 mcs.AddCommand(menuItem);
 
-                menuCommandID = new CommandID(GuidList.guidMetaCmdSet1, (int)PkgCmdIDList.cmdidMetaUIContext3);
-                menuItem = new OleMenuCommand(GenerateBoostBuildFileCallback, menuCommandID);
+                menuCommandID = new CommandID(GuidList.guidMetaCmdSet2, (int)PkgCmdIDList.cmdidMetaUIContext3);
+                menuItem = new OleMenuCommand(ProfileHeaderCallback, menuCommandID);
                 menuItem.BeforeQueryStatus += uiContex3Cmd_BeforeQueryStatus;
                 mcs.AddCommand(menuItem);
 
@@ -249,14 +252,11 @@ namespace Meta
                 monitorSelection.GetCurrentSelection(out hierarchyPtr, out projectItemId, out mis, out selectionContainerPtr);
 
                 IVsHierarchy hierarchy = Marshal.GetTypedObjectForIUnknown(hierarchyPtr, typeof(IVsHierarchy)) as IVsHierarchy;
-                if (hierarchy != null)
+                if (hierarchy != null && isProfilingBuildTime == 0 && !VsShellUtilities.IsSolutionBuilding(this) && ProjectHelper.IsCPPNode(projectItemId, hierarchy))
                 {
-                    if (ProjectHelper.IsCPPProject(projectItemId, hierarchy))
-                    {
-                        menuCommand.Visible = false;
-                        menuCommand.Text = "Convert to x64";
-                        return;
-                    }                    
+                    menuCommand.Visible = true;
+                    menuCommand.Text = isProfilingHeaders != 0 ? "Cancel Header Profile..." : "Profile Header Includes";
+                    return;
                 }
 
                 menuCommand.Visible = false;
@@ -351,7 +351,7 @@ namespace Meta
 
         /// <summary>
         /// </summary>
-        private void GenerateBoostBuildFileCallback(object sender, EventArgs e)
+        private void ProfileHeaderCallback(object sender, EventArgs e)
         {
             IVsMonitorSelection SelectionService;
             SelectionService = (IVsMonitorSelection)GetGlobalService(typeof(SVsShellMonitorSelection));
@@ -366,19 +366,26 @@ namespace Meta
                 {
                     IVsHierarchy hierarchy = Marshal.GetTypedObjectForIUnknown(ppHier, typeof(IVsHierarchy)) as IVsHierarchy;
 
-                    EnvDTE.Project project = ProjectHelper.GetProject(hierarchy);
-                    foreach (EnvDTE.Project prj in project.DTE.Solution.Projects)
-                    {
-                        try
-                        {
-                            //GenerateBoostBuildFile gen = new GenerateBoostBuildFile(prj);
-                        }
-                        catch (System.Exception)
-                        {
-                        }                        
-                    }
+                    object value;
+                    hierarchy.GetProperty(pitemid, (int)__VSHPROPID.VSHPROPID_Name, out value);
 
-                    GetBuildOutputPane().OutputStringThreadSafe("Conversion to x64 done." + Environment.NewLine);
+                    object svalue;
+                    hierarchy.GetProperty(pitemid, (int)__VSHPROPID.VSHPROPID_ExtObject, out svalue);
+
+                    //! Get the filename.
+                    string filename = value.ToString();
+
+                    EnvDTE.Project project = ProjectHelper.GetProject(hierarchy);
+                    if (isProfilingHeaders == 0)
+                    {
+                        ClaimInstantiationState();
+                        Options opts = GetOptions();
+                        headerProfiler = new HeaderProfiler(project, opts.StackMaxSize, filename, GetProfileOutputPane(), GetBuildOutputPane(), this.FreeInstantiationState);
+                    }
+                    else
+                    {
+                        headerProfiler.Cancel();
+                    }
                 }
             }
         }
@@ -413,6 +420,8 @@ namespace Meta
                         buildProfiler.Dispose();
                     if( templateProfiler != null )
                         templateProfiler.Dispose();
+                    if (headerProfiler != null)
+                        headerProfiler.Dispose();
                 }
 
                 // Indicate that the instance has been disposed.

@@ -218,7 +218,10 @@ namespace Meta
 
         public string CompilerExecutable
         {
-            get { return VCInstallDir + "\\bin\\cl.exe"; }
+            get 
+            {
+                return "cl.exe";//VCInstallDir + "\\bin\\cl.exe"; 
+            }
         }
 
         public string CompilerExecutableWithEnv
@@ -227,10 +230,10 @@ namespace Meta
             {
                 string platformArg = "x86";
                 if( String.Equals( Platform, "x64", StringComparison.InvariantCultureIgnoreCase ) )
-                    platformArg = "x64";
+                    platformArg = "x86_amd64";
                 else if(String.Equals( Platform, "itanium", StringComparison.InvariantCultureIgnoreCase ) )
                     platformArg = "ia64";
-                return @"cmd.exe /S /C call """ + VCInstallDir + @"\vcvarsall.bat"" " + platformArg + @" >nul && " + CompilerExecutable.Quote();
+                return @"cmd.exe /S /C call """ + VCInstallDir + @"\vcvarsall.bat"" " + platformArg + @" >nul && " + CompilerExecutable;
             }
         }
 
@@ -245,10 +248,10 @@ namespace Meta
             {
                 string platformArg = "x86";
                 if (String.Equals(Platform, "x64", StringComparison.InvariantCultureIgnoreCase))
-                    platformArg = "x64";
+                    platformArg = "x86_amd64";
                 else if (String.Equals(Platform, "itanium", StringComparison.InvariantCultureIgnoreCase))
                     platformArg = "ia64";
-                return @"/S /C call """ + VCInstallDir + @"\vcvarsall.bat"" " + platformArg + @" >nul && " + CompilerExecutable.Quote();
+                return @"/S /C call """ + VCInstallDir + @"\vcvarsall.bat"" " + platformArg + @" >nul && " + CompilerExecutable;
             }
         }
 
@@ -424,9 +427,9 @@ namespace Meta
                 cmd.Append(" /Za");
 
             if( cltool.EnableEnhancedInstructionSet == enhancedInstructionSetType.enhancedInstructionSetTypeSIMD )
-                cmd.Append(" /ARCH:sse");
+                cmd.Append(" /arch:SSE");
             else if( cltool.EnableEnhancedInstructionSet == enhancedInstructionSetType.enhancedInstructionSetTypeSIMD2 )
-                cmd.Append(" /ARCH:sse2");
+                cmd.Append(" /arch:SSE2");
 
             if( cltool.EnableFiberSafeOptimizations )
                 cmd.Append(" /GT");
@@ -517,6 +520,8 @@ namespace Meta
 
             if (!String.IsNullOrWhiteSpace(cltool.AdditionalOptions))
                 cmd.Append(" " + cltool.AdditionalOptions);
+
+            
             
             string cmdLine = cmd.ToString();
 
@@ -584,8 +589,8 @@ namespace Meta
 
             return s;
         }
-        
-        public string GenerateCLCmdArgs(string filename, bool skipPrecompiledHeader = true, bool skipObjectFile = true, bool skipMinimalRebuild = true)
+
+        public string GenerateCLCmdArgs(string filename, bool skipPrecompiledHeader = true, bool skipObjectFile = true, bool skipMinimalRebuild = true, bool showIncludes = false)
         {
             VCFile file = GetVCFile(filename);
 
@@ -728,9 +733,9 @@ namespace Meta
                 cmd.Append(" /Za");
 
             if (fileTool.EnableEnhancedInstructionSet == enhancedInstructionSetType.enhancedInstructionSetTypeSIMD)
-                cmd.Append(" /ARCH:sse");
+                cmd.Append(" /arch:SSE");
             else if (fileTool.EnableEnhancedInstructionSet == enhancedInstructionSetType.enhancedInstructionSetTypeSIMD2)
-                cmd.Append(" /ARCH:sse2");
+                cmd.Append(" /arch:SSE2");
 
             if (fileTool.EnableFiberSafeOptimizations)
                 cmd.Append(" /GT");
@@ -895,7 +900,10 @@ namespace Meta
 
             if (!String.IsNullOrWhiteSpace(fileTool.AdditionalOptions))
                 cmd.Append(" " + ReplaceMacros(fileTool.AdditionalOptions, fileConfig) );
-            
+
+            if (showIncludes)
+                cmd.Append(" /showIncludes");
+
             string cmdLine = cmd.ToString();
             return cmdLine;
         }

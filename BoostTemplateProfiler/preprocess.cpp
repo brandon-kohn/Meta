@@ -30,6 +30,8 @@
  #include <boost/spirit/include/classic_file_iterator.hpp>
 #include "boost/range/iterator_range_core.hpp"
 #include "boost/xpressive/xpressive.hpp"
+#include <boost/xpressive/regex_actions.hpp>
+#include <boost/format.hpp>
 
 #include <fstream>
 
@@ -66,7 +68,7 @@ namespace regex
 
     cregex make_parens()
     {
-        cregex parens; //parens = keep( '(' >> *keep( keep( +keep( ignored | ~(set= '(',')') ) | ( -!by_ref( parens ) ) ) ) >> ')' );
+        cregex parens;// = keep('(' >> *keep(keep(+keep(ignored | ~(set = '(', ')')) | (-!by_ref(parens)))) >> ')');
         // Example from Xpressive documentation:
         parens =
         '('                           // is an opening parenthesis ...
@@ -89,15 +91,17 @@ namespace regex
     //cregex const comment           = keep( "//" /*>> backslashed_lines*/ | "/*" >> keep( *( ~(set='*') | '*' >> ~before('/') ) ) >> "*/" );
     cregex const pp                = keep( '#' >> /*backslashed_lines*/ /*-*/*~_ln >> _ln );
     cregex const ignored           = keep( string /*| comment*/ | pp );
-    cregex const parens            = make_parens();
+    cregex const parens            = keep('(' >> *keep(keep(+keep(ignored | ~(set = '(', ')')) | (-!by_ref(parens)))) >> ')'); //make_parens();
     cregex const ws                = _s | _ln /*| comment*/ | pp;
-    cregex const cstart = (bos | after((set = '{', '}', ';','>'))) >> keep(*ws);
-    cregex const class_header =        
+    cregex const cstart = keep( after((set = '{', '}', ';','>')) >> *ws );
+    cregex const enum_class = (_b >> as_xpr("enum") >> +ws >> "class" >> _b);
+    cregex const class_header =
+        //cstart >> 
         keep
         (
-            cstart >>
+            //cstart >>
             keep( _b >> ( as_xpr( "class" ) | "struct" ) ) >>
-            keep( +ws >> +_w                             ) >>
+            keep( +ws >> +_w ) >>
             keep( *keep( ~(set= '(',')','{',';','=') | parens | ignored ) ) >>
             '{'
         );
@@ -122,7 +126,7 @@ struct formatter : boost::noncopyable
 
         typedef cmatch::value_type sub_match;
 
-        BOOST_ASSERT( what.size() == 5 );
+        BOOST_ASSERT( what.size() == 6 );
 
         cmatch::const_iterator const p_match( std::find_if( what.begin() + 1, what.end(), []( sub_match const & match ){ return match.matched; } ) );
         BOOST_ASSERT_MSG( p_match != what.end(), "Something should have matched." );
@@ -131,7 +135,8 @@ struct formatter : boost::noncopyable
         enum match_type_t
         {
             ignore = 1,
-            header,
+            class_header,
+            func_header,
             open_brace,
             close_brace
         };
@@ -143,12 +148,21 @@ struct formatter : boost::noncopyable
                 out = std::copy( match.first, match.second, out );
                 break;
 
-            case header:
+            case class_header:
             {
-                braces.push_back( " TEMPLATE_PROFILE_EXIT() }" );
+                braces.push_back(" TEMPLATE_PROFILE_EXIT() }");
                 static char const tail[] = " TEMPLATE_PROFILE_ENTER()";
                 out = std::copy( match.first, match.second, out );
                 out = std::copy( boost::begin( tail ), boost::end( tail ) - 1, out );
+                break;
+            }
+
+            case func_header:
+            {
+                braces.push_back(" TEMPLATE_PROFILE_EXIT() }");
+                static char const tail[] = " TEMPLATE_PROFILE_ENTER()";
+                out = std::copy(match.first, match.second, out);
+                out = std::copy(boost::begin(tail), boost::end(tail) - 1, out);
                 break;
             }
 
@@ -195,7 +209,34 @@ void preprocess(char const * const p_filename, const char* const p_output_file)
 
     regex::match_results<char const *> search_results;
     using namespace regex;
-    static const cregex  main_regex( (s1= ignored) | (s2=keep( class_header | function_header )) | (s3='{') | (s4='}') );
+    static const cregex  main_regex( (s1 = (ignored | keep(enum_class))) | (s2 = keep(class_header)) | (s3 = keep(function_header)) | (s4 = '{') | (s5 = '}') );
+    
+#if defined(_DEBUG)
+    std::ofstream logofs("g:\\Projects\\regex_log.log");
+    boost::format fmt("//! regex: %1% : %2%");
+#define META_LOG_REGEX(logofs, r) \
+    logofs << boost::str(fmt % BOOST_PP_STRINGIZE(r) % r.regex_id()) << std::endl;\
+    /***/
+
+    META_LOG_REGEX(logofs, string);
+    META_LOG_REGEX(logofs, pp);
+    META_LOG_REGEX(logofs, ignored);
+    META_LOG_REGEX(logofs, parens);
+    META_LOG_REGEX(logofs, ws);
+    META_LOG_REGEX(logofs, cstart);
+    META_LOG_REGEX(logofs, enum_class);
+    META_LOG_REGEX(logofs, class_header);
+    META_LOG_REGEX(logofs, control);
+    META_LOG_REGEX(logofs, modifiers);
+    META_LOG_REGEX(logofs, fstart);
+    META_LOG_REGEX(logofs, body);
+    META_LOG_REGEX(logofs, boost::regex::end);
+    META_LOG_REGEX(logofs, body_start);
+    META_LOG_REGEX(logofs, function_header);
+    META_LOG_REGEX(logofs, main_regex);
+
+    logofs.close();
+#endif
 
     //buffer = "#include <template_profiler.hpp>\n";
     std::string buffer =
@@ -225,7 +266,7 @@ void preprocess(char const * const p_filename, const char* const p_output_file)
     std::ofstream ofs( p_output_file );
     if( !ofs.good() )
         return;
-
+ 
     ofs << buffer;
     // Implementation note:
     //   The whole file has to be searched at once in order to handle class/

@@ -141,6 +141,7 @@
     <Compile Include="CallbackLog.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="HeaderProfiler.cs" />
     <Compile Include="IDEBuildLogger.cs">
       <SubType>Code</SubType>
     </Compile>

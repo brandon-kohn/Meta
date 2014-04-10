@@ -8,6 +8,8 @@
 #include "boost/xpressive/xpressive.hpp"
 #include <fstream>
 #include <iterator>
+#include "BoostTemplateProfiler/preprocess.hpp"
+#include <iostream>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -112,7 +114,31 @@ namespace MetaNative_UnitTests
                  "                                                              "
                  "                                                                          {";
             //! The stack isn't big enough, and can't seem to be increased via project settings for the way it's called from managed code.
-            //Assert::IsTrue(boost::xpressive::regex_match(test, function_header));
+            //! note: I had to increase the stack size of the vstest engine to have these work:
+            //! Here's the command (run as admin): 
+            //! NOTE: Make a backup first!!!
+            //! C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow > editbin /stack:50000000, 500000 vstest.executionengine.x86.exe
+            Assert::IsTrue(boost::xpressive::regex_match(test, function_header));
+        }
+
+        TEST_METHOD(TestPreprocess)
+        {
+            std::string inputFile("C:\\Users\\Brandon\\Documents\\GitHub\\Meta\\MetaNative_UnitTests\\debug_preprocess.cpp");
+            std::string outputFile("C:\\Users\\Brandon\\Documents\\GitHub\\Meta\\MetaNative_UnitTests\\debug_preprocess.instrumented.cpp");
+            try
+            {
+                //! The stack isn't big enough, and can't seem to be increased via project settings for the way it's called from managed code.
+                //! note: I had to increase the stack size of the vstest engine to have these work:
+                //! Here's the command (run as admin): 
+                //! NOTE: Make a backup first!!!
+                //! C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow > editbin /stack:50000000, 500000 vstest.executionengine.x86.exe
+                TemplateProfilePreprocess(inputFile.c_str(), outputFile.c_str());
+            }
+            catch (std::exception& e)
+            {
+                std::string what = e.what();
+                std::cout << what << std::endl;
+            }
         }
 
 	};

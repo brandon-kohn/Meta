@@ -119,7 +119,7 @@ namespace Meta
 
                 profileProcess.StartInfo.UseShellExecute = false;
                 profileProcess.StartInfo.FileName = "cmd.exe";
-                profilePane.OutputStringThreadSafe("Command line: cmd.exe " + full_args + Environment.NewLine);
+                //profilePane.OutputStringThreadSafe("Command line: cmd.exe " + full_args + Environment.NewLine);
                 profileProcess.StartInfo.Arguments = full_args;
                 profileProcess.StartInfo.CreateNoWindow = true;
                 profileProcess.StartInfo.WorkingDirectory = starting_directory;
@@ -165,7 +165,7 @@ namespace Meta
                 
                 profileProcess.StartInfo.UseShellExecute = false;
                 profileProcess.StartInfo.FileName = "cmd.exe";
-                profilePane.OutputStringThreadSafe("Command line: cmd.exe " + full_args + Environment.NewLine);
+                //profilePane.OutputStringThreadSafe("Command line: cmd.exe " + full_args + Environment.NewLine);
                 profileProcess.StartInfo.Arguments = full_args;
                 profileProcess.StartInfo.CreateNoWindow = true;
                 profileProcess.StartInfo.WorkingDirectory = starting_directory;
