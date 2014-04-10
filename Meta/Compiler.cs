@@ -30,8 +30,8 @@ namespace Meta
         private EnvDTE.Project project;
         private VCCompilerHelper clTool;
         private string filename;
-        private IVsOutputWindowPane buildPane;
-        private IVsOutputWindowPane infoPane;
+        private ICompileLogger buildPane;
+        private ICompileLogger infoPane;
         private TaskTimer taskTimer;
         private System.Diagnostics.Process myProcess;
         public bool ShowIncludes { get; set; }
@@ -41,7 +41,7 @@ namespace Meta
             get { return taskTimer.Mark();  }
         }
 
-        public Compiler(EnvDTE.Project proj, string file, IVsOutputWindowPane build_pane, IVsOutputWindowPane info_pane = null)
+        public Compiler(EnvDTE.Project proj, string file, ICompileLogger build_pane, ICompileLogger info_pane = null)
         {
             ShowIncludes = false;
             taskTimer = new TaskTimer("Compile " + file);
@@ -101,21 +101,16 @@ namespace Meta
         private void OutputDataHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
             // Collect the net view command output.
-            if (!String.IsNullOrEmpty(outLine.Data))
-            {
-                if( infoPane != null )
-                    infoPane.OutputStringThreadSafe(Environment.NewLine + "  " + outLine.Data);
-            }
+            if( infoPane != null )
+                infoPane.ProcessMessage(outLine.Data);
         }
 
         private void ErrorDataHandler(object sendingProcess, DataReceivedEventArgs errLine)
         {
             // Write the error text to the file if there is something
             // to write and an error file has been specified.
-            if (!String.IsNullOrEmpty(errLine.Data) && buildPane != null)
-            {
-                buildPane.OutputStringThreadSafe(errLine.Data+Environment.NewLine);                
-            }
+            if (buildPane != null)
+                buildPane.ProcessError(errLine.Data);
         }
 
         public void Compile()
@@ -146,7 +141,7 @@ namespace Meta
                         }
                         catch (System.Exception ex)
                         {
-                            buildPane.OutputStringThreadSafe(ex.Message);
+                            buildPane.ProcessError(ex.Message);
                             return;
                         }
                         finally

@@ -214,7 +214,7 @@ void preprocess(char const * const p_filename, const char* const p_output_file)
 #if (0)//defined(_DEBUG)
     std::ofstream logofs("g:\\Projects\\regex_log.log");
     boost::format fmt("//! regex: %1% : %2%");
-#define META_LOG_REGEX(logofs, r) \
+    #define META_LOG_REGEX(logofs, r) \
     logofs << boost::str(fmt % BOOST_PP_STRINGIZE(r) % r.regex_id()) << std::endl;\
     /***/
 

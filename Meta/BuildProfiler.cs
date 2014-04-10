@@ -122,7 +122,7 @@ namespace Meta
 
                         if (System.IO.File.Exists(file.FullPath))
                         {
-                            cl = new Compiler(project, file.ItemName, buildPane);
+                            cl = new Compiler(project, file.ItemName, new OutputWindowPaneCompileLogger(buildPane));
                             cl.Compile();
                             TimeSpan ts = cl.BuildTime;
                             data.Insert(ts, file.ItemName);
@@ -144,7 +144,7 @@ namespace Meta
 
                     if (System.IO.File.Exists(singleFile.FullPath))
                     {
-                        cl = new Compiler(project, singleFile.ItemName, buildPane);
+                        cl = new Compiler(project, singleFile.ItemName, new OutputWindowPaneCompileLogger(buildPane));
                         cl.Compile();
                         TimeSpan ts = cl.BuildTime;
                         data.Insert(ts, singleFile.ItemName);

@@ -67,9 +67,12 @@ namespace Meta
         {
             try
             {
+                VCFile singleFile = clTool.GetVCFile(onlyFile);
+                
                 profilePane.Clear();
                 profilePane.Activate();
-                profilePane.OutputStringThreadSafe("Starting Include Profile on " + project.Name + " (" + clTool.ActiveConfiguration.Name + "):" + Environment.NewLine);
+
+                profilePane.OutputStringThreadSafe("Starting Include Profile on " + singleFile.Name + " (" + clTool.ActiveConfiguration.Name + "):" + Environment.NewLine);
                 
                 foreach (EnvDTE.ProjectItem i in project.ProjectItems)
                 {
@@ -82,12 +85,11 @@ namespace Meta
                     if (!i.Saved)
                         i.Save("");
                 }
-
-                VCFile singleFile = clTool.GetVCFile(onlyFile);
-                                
+                                                
                 StringBuilder divider = new StringBuilder(88);
                 divider.Append('-', 88);
                 profilePane.OutputStringThreadSafe(divider + Environment.NewLine + Environment.NewLine);
+                profilePane.OutputStringThreadSafe(singleFile.FullPath + Environment.NewLine);
 
                 if (cancelBuild)
                 {
@@ -98,8 +100,8 @@ namespace Meta
                 if (System.IO.File.Exists(singleFile.FullPath))
                 {
                     try
-                    {                        
-                        cl = new Compiler(project, singleFile.ItemName, buildPane, profilePane);
+                    {
+                        cl = new Compiler(project, singleFile.ItemName, new IncludeProfileCompileLogger(buildPane), new IncludeProfileCompileLogger(profilePane));
                         cl.ShowIncludes = true;
                         cl.Compile();
                     }

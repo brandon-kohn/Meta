@@ -674,7 +674,7 @@ namespace Meta
             // Register the loggers in BuildLoggers
             if (accessor != null && isDesignTimeBuild)
             {
-                foreach (ILogger l in loggers)
+                foreach (ICompileLogger l in loggers)
                 {
                     accessor.RegisterLogger(submission.SubmissionId, l);
                 }

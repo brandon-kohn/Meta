@@ -145,8 +145,11 @@
     <Compile Include="IDEBuildLogger.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ICompileLogger.cs" />
+    <Compile Include="IncludeProfileCompileLogger.cs" />
     <Compile Include="MultiMap.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="OutputWindowPaneCompileLogger.cs" />
     <Compile Include="ProfileLogger.cs">
       <SubType>Code</SubType>
     </Compile>
